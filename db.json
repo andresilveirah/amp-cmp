@@ -1,0 +1,8 @@
+{
+  "consented": {
+    "promptIfUnknown": false
+  }, 
+  "rejected": {
+    "promptIfUnknown": true
+  }
+}
