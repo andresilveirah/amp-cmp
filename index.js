@@ -2,7 +2,7 @@ var express = require('express');
 
 var app = express();
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: true}));
 
 var consents = {
   "very-long-key-1": {

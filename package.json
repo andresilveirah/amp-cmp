@@ -9,5 +9,8 @@
   "private": false,
   "dependencies": {
     "express": "latest"
+  },
+  "scripts": {
+    "start": "node index.js"
   }
 }
