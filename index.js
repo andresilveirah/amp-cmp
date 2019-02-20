@@ -1,8 +1,8 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 
 var app = express();
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(bodyParser.text());
 
 var config = {
   port: process.env.PORT || 3000
@@ -10,10 +10,10 @@ var config = {
 
 var consents = {
   "very-long-key-1": {
-    "consented": true
+    consented: true
   },
   "very-long-key-2": {
-    "consented": false
+    consented: false
   }
 };
 
@@ -26,10 +26,13 @@ app.post('/consents/check', function(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', "true");
   res.setHeader('Access-Control-Allow-Origin', req.query.allowedDomain);
 
-  if (req.body.consentInstanceId && consents[req.body.consentInstanceId]) {
-    res.status(200).json({ "promptIfUnknown": consents[req.body.consentInstanceId].consented });
+  // TODO: open an PR to add the 'Content-Type: application/json' to <amp-consent>
+  var jsonBody = JSON.parse(req.body);
+
+  if (jsonBody && consents[jsonBody.consentInstanceId]) {
+    res.status(200).json({ "promptIfUnknown": consents[jsonBody.consentInstanceId].consented });
   } else {
-    res.status(400).json({ error: 'Key '+req.body.consentInstanceId+' Not Found' });
+    res.status(400).json({ error: 'Key '+jsonBody.consentInstanceId+' Not Found' });
   }
 });
 
