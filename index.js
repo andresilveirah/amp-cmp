@@ -17,6 +17,8 @@ var consents = {
   }
 };
 
+app.use('/', express.static('static'));
+
 app.post('/consents/check', function(req, res) {
   // Necessary for AMP CORS security protocol.
   // @see https://github.com/ampproject/amphtml/blob/master/spec/amp-cors-requests.md
@@ -30,5 +32,5 @@ app.post('/consents/check', function(req, res) {
 });
 
 app.listen(config.port, function () {
-  console.log('AMP Dummy Response - listening on port 80!');
+  console.log('AMP Dummy Response - listening on port '+config.port);
 });
