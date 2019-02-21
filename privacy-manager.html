@@ -135,7 +135,7 @@
         <script type="application/json">
             {
             "consents": {
-                "very-long-key-2": {
+                "very-long-key-1": {
                     "checkConsentHref": "https://amp-response.herokuapp.com/consents/check?allowedDomain=https://andresilveirah.github.io",
                     "promptUI": "myConsentFlow"
                 }
@@ -207,7 +207,7 @@
           Here at the top are two ads loaded with <code>&lt;amp-ad&gt;</code>. The first one contains the attribute <code>data-block-on-consent</code> meaning that it won't be loaded until the consent user has given consent to the vendors through the consent flow.
         </p>
         <p>
-          At the moment, the flow we're "loading a flow" that does not require the Privacy Manager to be displayed. In the <code>&lt;amp-consent&gt;</code> configuration, changing the consent ID from <code>"very-long-key-2"</code> to <code>"very-long-key-1"</code> will trigger a response to <code>&lt;amp-consent&gt;</code> that requires the Privacy Manager to be open and the ads will wait for the consent to be displayed. There's also a <a href="./privacy-manager">demo</a> for that ;)
+          At the moment, the flow we're "loading a flow" that does not require the Privacy Manager to be displayed. In the <code>&lt;amp-consent&gt;</code> configuration, changing the consent ID from <code>"very-long-key-2"</code> to <code>"very-long-key-1"</code> will trigger a response to <code>&lt;amp-consent&gt;</code> that requires the Privacy Manager to be open and the ads will wait for the consent to be displayed.
         </p>
         <h3>TODO: </h2>
         <p>
