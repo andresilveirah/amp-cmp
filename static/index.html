@@ -47,7 +47,7 @@
     </header>
     <main class="markdown-body">
       <p>
-        This a mock server to exemplify how to use AMP's consent component. The <code>amp-consent</code> component will make a <code>POST</code> call to the URL included in its configuration (in our case, <a href="https://amp-response.herokuapp.com/consents/check">https://amp-response.herokuapp.com/consents/check</a>), passing the following parameter:
+        This a mock server to exemplify how to use AMP's consent component. The <code>amp-consent</code> component will make a <code>POST</code> call to the URL included in its configuration (in our case, <a href="https://amp-response.herokuapp.com/">https://amp-response.herokuapp.com/consents/check?allowedDomain=[YOUR DOMAIN]</a>), passing the following parameter:
       </p>
       <pre>
 {
@@ -60,6 +60,19 @@
 {
   "promptIfUnknown": "true" // or false
 }</pre>
+    <h2>Known limitations of <code>amp-consent</code></h2>
+    <p>The <code>amp-consent</code> component is fairly new and it is still <a href="https://github.com/ampproject/amphtml/issues/15651">in development</a>. Here are its main limitations:</p>
+    <ul>
+      <li>
+        No support to the <a href="https://iabtechlab.com/standards/gdpr-transparency-and-consent-framework/">IAB framework</a>
+      </li>
+      <li>
+        No support of individual purpose or vendor consents
+      </li>
+      <li>
+          Limited events/hooks for consent and rejection actions
+      </li>
+    </ul>
     <p>For more information check the AMP's consent component <a href="https://www.ampproject.org/docs/reference/components/amp-consent#consent-instance-id">documentation</a>.</p>
     </main>
   </body>
