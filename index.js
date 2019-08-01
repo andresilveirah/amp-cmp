@@ -1,11 +1,13 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 
-var app = express();
-app.use(bodyParser.text());
+var loggerMiddleWare = function (req, _res, next) {
+  console.log('%s %s %s', req.method, req.url, req.path)
+  next()
+}
 
 var config = {
-  port: process.env.PORT || 3000
+  port: process.env.PORT || 80
 }
 
 var consents = {
@@ -17,6 +19,9 @@ var consents = {
   }
 };
 
+var app = express();
+app.use(bodyParser.text());
+app.use(loggerMiddleWare);
 app.use('/', express.static('static'));
 
 app.post('/consents/check', function(req, res) {
