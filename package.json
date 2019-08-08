@@ -2,7 +2,7 @@
   "name": "amp-consent-response",
   "version": "1.0.0",
   "description": "A dummy server for the amp-consent component",
-  "main": "index.js",
+  "main": "./src/index.js",
   "repository": "https://github.com/andresilveirah/amp-consent-response.git",
   "author": "André Herculano <andresilveirah@gmail.com>",
   "license": "MIT",
@@ -12,6 +12,8 @@
     "express": "^4.17.1"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node src/index.js",
+    "amp-ui":  "PORT=8080 yarn start",
+    "server":  "PORT=80 yarn start"
   }
 }

@@ -1,0 +1,134 @@
+<html style="overflow-y: hidden">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <meta name="viewport" content="width=device-width, initial-scale=1, height=device-height, viewport-fit=cover, user-scalable=no">
+  </head>
+  <body style="overflow-y: hidden; height: 100vh;">
+    <script type = "text/javascript">
+      console.log("== Loading AMP Web Page v1.0 ==");
+      var getCookie = function (cookieName) {
+        var name = cookieName + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+      var setCookie = function(name, value) {
+        document.cookie = name + "=" + value + "; domain=.consensu.org; path=/;";
+      }
+      var deleteCookie = function(name) {
+        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; Max-Age=-99999999; domain=.consensu.org; path=/;";
+      }
+      var login = function (authId) {
+        deleteCookie('resolvedID');
+        setCookie('authId', authId);
+      }
+      var logOut = function () {
+        deleteCookie('resolvedID');
+        deleteCookie('authId');
+      }
+      var handleIdentity = function (authId) {
+        authId ? login(authId) : logOut();
+      }
+
+      function AMPClient (consentString, consentUUID) {
+        this.consentString = consentString;
+        this.consentUUID = consentUUID;
+      }
+      AMPClient.prototype.postMessage = function(type, action, info) {
+        var payload = { type: type, action: action };
+        if(info !== undefined) payload.info = info;
+        window.parent.postMessage(payload, '*');
+      }
+      AMPClient.prototype.action = function (actionName, info) {
+        var self = this;
+        setTimeout(() => {
+          self.postMessage('consent-response', actionName, info);
+        }, 1000);
+      };
+      AMPClient.prototype.ui = function name(uiAction) {
+        this.postMessage('consent-ui', uiAction);
+      }
+      AMPClient.prototype.accept = function(consentString) { this.action('accept', consentString); };
+      AMPClient.prototype.reject = function(consentString) { this.action('reject', consentString); };
+      AMPClient.prototype.dismiss = function() { this.action('dismiss'); };
+      AMPClient.prototype.ready = function () { this.ui('ready'); };
+      AMPClient.prototype.fullscreen = function () { this.ui('enter-fullscreen'); };
+
+      var SourcePointClient = function (amp, getConsentString) {
+        return {
+          onReceiveMessageData: function (msgData) {
+            amp.ready();
+            amp.fullscreen();
+
+            __cmp('getConsentData', null, function (consentData) {
+              console.log(JSON.stringify(consentData));
+            });
+            if(msgData.msgID === 0) amp.dismiss();
+          },
+          onMessageChoiceSelect: function (type) {
+            // TODO: refactor this and add Matt's info about message type choices
+            if(type === 12) return; // type 12 refers to opening the Privacy Manager
+            type === 11 ?
+              amp.accept(getConsentString()) :
+              amp.reject(getConsentString())
+          },
+          onPrivacyManagerChoiceSelect: function (consents) {
+            // consents = {"purposeConsent":"all|some|none","vendorConsent":"all"}
+            switch (consents.purposeConsent) {
+              case "all":
+              case "some":
+                __cmp('getConsentData', null, function(consentData) {
+                  console.log(JSON.stringify(consentData));
+                  amp.accept(consentData.consentData);
+                });
+                break;
+              default:
+                __cmp('getConsentData', null, function(consentData) {
+                  console.log(JSON.stringify(consentData));
+                  amp.reject(consentData.consentData);
+                });
+                break;
+            }
+          },
+          onMessageChoiceError: function (_error) { amp.dismiss(); }
+        }
+      }
+
+      var getEuConsent = function () { return getCookie('euconsent'); };
+
+      var config = JSON.parse(window.name);
+      var clientConfig = config.clientConfig;
+      handleIdentity(clientConfig.authId);
+
+      window._sp_ = {
+        config: {
+          accountId: clientConfig.accountId,
+          siteHref: "https://"+clientConfig.siteName,
+          mms_domain: 'message.sp-prod.net',
+          runImmediately: true,
+          detection: { timeout: 1 },
+          cmp: { enable: true },
+          msg: {
+            targetingParams: clientConfig.targetingParams || {},
+            stageCampaign: clientConfig.stageCampaign === undefined ?
+              false :
+              clientConfig.stageCampaign
+          },
+          cmd: [ function() { _sp_.msg.startMsg(); }],
+          events: SourcePointClient(new AMPClient(), getEuConsent)
+        }
+      }
+    </script>
+    <script src='//d2zv5rkii46miq.cloudfront.net/0/latest/messaging_without_detection.js'></script>
+  </body>
+  <div id="__genieContainer" style="all: initial;"></div>
+</html>
