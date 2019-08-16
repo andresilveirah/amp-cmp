@@ -46,13 +46,14 @@
       AMPClient.prototype.postMessage = function(type, action, info) {
         var payload = { type: type, action: action };
         if(info !== undefined) payload.info = info;
+        console.log('postMessage: '+type+', '+action+' '+JSON.stringify(info || ''));
         window.parent.postMessage(payload, '*');
       }
       AMPClient.prototype.action = function (actionName, info) {
         var self = this;
         setTimeout(() => {
           self.postMessage('consent-response', actionName, info);
-        }, 1000);
+        }, 300);
       };
       AMPClient.prototype.ui = function name(uiAction) {
         this.postMessage('consent-ui', uiAction);
@@ -61,54 +62,48 @@
       AMPClient.prototype.reject = function(consentString) { this.action('reject', consentString); };
       AMPClient.prototype.dismiss = function() { this.action('dismiss'); };
       AMPClient.prototype.ready = function () { this.ui('ready'); };
-      AMPClient.prototype.fullscreen = function () { this.ui('enter-fullscreen'); };
+      AMPClient.prototype.fullscreen = function () {
+        var self = this;
+        setTimeout(() => {
+          self.ui('enter-fullscreen');
+        }, 100);
+      };
 
-      var SourcePointClient = function (amp, getConsentString) {
+      var SourcePointClient = function (amp, userTriggered) {
         return {
           onReceiveMessageData: function (msgData) {
             amp.ready();
             amp.fullscreen();
-
-            __cmp('getConsentData', null, function (consentData) {
-              console.log(JSON.stringify(consentData));
-            });
-            if(msgData.msgID === 0) amp.dismiss();
+            if(msgData.msgID === 0 && !userTriggered) amp.dismiss();
           },
           onMessageChoiceSelect: function (type) {
             // TODO: refactor this and add Matt's info about message type choices
             if(type === 12) return; // type 12 refers to opening the Privacy Manager
-            type === 11 ?
-              amp.accept(getConsentString()) :
-              amp.reject(getConsentString())
+
+            __cmp('getConsentData', null, function(consentData) {
+              console.log(JSON.stringify(consentData));
+              type === 11 ?
+                amp.accept(consentData.consentData) :
+                amp.reject(consentData.consentData);
+            })
           },
-          onPrivacyManagerChoiceSelect: function (consents) {
-            // consents = {"purposeConsent":"all|some|none","vendorConsent":"all"}
-            switch (consents.purposeConsent) {
-              case "all":
-              case "some":
-                __cmp('getConsentData', null, function(consentData) {
-                  console.log(JSON.stringify(consentData));
-                  amp.accept(consentData.consentData);
-                });
-                break;
-              default:
-                __cmp('getConsentData', null, function(consentData) {
-                  console.log(JSON.stringify(consentData));
-                  amp.reject(consentData.consentData);
-                });
-                break;
-            }
+          onPrivacyManagerChoiceSelect: function (consents) { // consents = {"purposeConsent":"all|some|none","vendorConsent":"all|some|none", "vendorList":}
+            console.log(JSON.stringify(consents));
+            __cmp('getConsentData', null, function(consentData) {
+              console.log(JSON.stringify(consentData));
+              consents.purposeConsent === "none" ?
+                amp.reject(consentData.consentData) :
+                amp.accept(consentData.consentData);
+            })
           },
           onMessageChoiceError: function (_error) { amp.dismiss(); }
         }
       }
 
-      var getEuConsent = function () { return getCookie('euconsent'); };
-
       var config = JSON.parse(window.name);
       var clientConfig = config.clientConfig;
+      var userTriggered = config.promptTrigger === 'action'; // 'action | load'
       handleIdentity(clientConfig.authId);
-
       window._sp_ = {
         config: {
           accountId: clientConfig.accountId,
@@ -123,8 +118,14 @@
               false :
               clientConfig.stageCampaign
           },
-          cmd: [ function() { _sp_.msg.startMsg(); }],
-          events: SourcePointClient(new AMPClient(), getEuConsent)
+          cmd: [
+            function() {
+                _sp_.msg.startMsg();
+                if(userTriggered)
+                  _sp_.privacyManager.loadPrivacyManagerModal(clientConfig.siteId, clientConfig.privacyManagerId)
+            }
+          ],
+          events: SourcePointClient(new AMPClient(), userTriggered)
         }
       }
     </script>
