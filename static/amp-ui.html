@@ -73,8 +73,11 @@
         return {
           onReceiveMessageData: function (msgData) {
             amp.ready();
-            amp.fullscreen();
-            if(msgData.msgID === 0 && !userTriggered) amp.dismiss();
+            if(msgData.msgID === 0 && !userTriggered) {
+              amp.dismiss();
+            } else {
+              amp.fullscreen();
+            }
           },
           onMessageChoiceSelect: function (type) {
             // TODO: refactor this and add Matt's info about message type choices
@@ -87,7 +90,8 @@
                 amp.reject(consentData.consentData);
             })
           },
-          onPrivacyManagerChoiceSelect: function (consents) { // consents = {"purposeConsent":"all|some|none","vendorConsent":"all|some|none", "vendorList":}
+          onPrivacyManagerChoiceSelect: function (consents) {
+            // consents = {"purposeConsent":"all|some|none","vendorConsent":"all|some|none", "vendorList": undefined}
             console.log(JSON.stringify(consents));
             __cmp('getConsentData', null, function(consentData) {
               console.log(JSON.stringify(consentData));
