@@ -7,8 +7,8 @@ const consents = { 'SourcePoint': { consented: true } }
 
 const app = express()
 app.use(textParser())
-app.use(logger)
 app.use('/', express.static('static'))
+app.use(logger)
 
 // https://github.com/ampproject/amphtml/blob/master/extensions/amp-consent/amp-consent.md#checkconsenthref
 app.post('/consents/check', (req, res) => {
