@@ -116,8 +116,7 @@
           accountId: clientConfig.accountId,
           siteHref: "https://"+clientConfig.siteName,
           mms_domain: 'message.sp-prod.net',
-          runImmediately: true,
-          detection: { timeout: 1 },
+          writeFirstPartyCookies: true,
           cmp: { enable: true },
           msg: {
             targetingParams: clientConfig.targetingParams || {},
@@ -128,8 +127,9 @@
           cmd: [
             function() {
                 _sp_.msg.startMsg();
-                if(userTriggered)
-                  _sp_.privacyManager.loadPrivacyManagerModal(clientConfig.siteId, clientConfig.privacyManagerId)
+                if(userTriggered) {
+                  _sp_.privacyManager.loadPrivacyManagerModal(clientConfig.siteId, clientConfig.privacyManagerId);
+              }
             }
           ],
           events: SourcePointClient(new AMPClient(), userTriggered)
