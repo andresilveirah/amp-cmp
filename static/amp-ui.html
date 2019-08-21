@@ -58,8 +58,14 @@
       AMPClient.prototype.ui = function name(uiAction) {
         this.postMessage('consent-ui', uiAction);
       }
-      AMPClient.prototype.accept = function(consentString) { this.action('accept', consentString); };
-      AMPClient.prototype.reject = function(consentString) { this.action('reject', consentString); };
+      AMPClient.prototype.accept = function(consentString) {
+        setCookie('AMPConsentState', 'accepted')
+        this.action('accept', consentString);
+      };
+      AMPClient.prototype.reject = function(consentString) {
+        setCookie('AMPConsentState', 'rejected')
+        this.action('reject', consentString);
+      };
       AMPClient.prototype.dismiss = function() { this.action('dismiss'); };
       AMPClient.prototype.ready = function () { this.ui('ready'); };
       AMPClient.prototype.fullscreen = function () {
@@ -73,10 +79,20 @@
         return {
           onReceiveMessageData: function (msgData) {
             amp.ready();
-            if(msgData.msgID === 0 && !userTriggered) {
-              amp.dismiss();
-            } else {
+            if(msgData.msgID != 0 || userTriggered) {
               amp.fullscreen();
+            } else {
+              switch (getCookie('AMPConsentState')) {
+                case 'accepted':
+                  amp.accept(getCookie('euconsent'));
+                  break;
+                case 'rejected':
+                  amp.accept(getCookie('euconsent'));
+                  break;
+                default:
+                  amp.dismiss();
+                  break;
+              }
             }
           },
           onMessageChoiceSelect: function (type) {
