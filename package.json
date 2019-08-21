@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "amp-ui":  "PORT=8080 yarn start",
-    "server":  "PORT=80 yarn start"
+    "amp-ui": "PORT=8080 yarn start",
+    "server": "PORT=80 yarn start"
   }
 }
