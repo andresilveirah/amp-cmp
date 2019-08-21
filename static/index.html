@@ -99,14 +99,24 @@
       }
     </style>
   </head>
+  <!--
+          config for localhost
+          "checkConsentHref": "//localhost/consents/check",
+          "promptUISrc": "//localhost:8080/amp-ui.html",
+
+          config for remote endpoint
+          "checkConsentHref": "https://sourcepoint.mgr.consensu.org/consent/v2/amp",
+          "promptUISrc": "https://amp.pm.sourcepoint.mgr.consensu.org/",
+   -->
   <body>
     <amp-consent id='consent' layout='nodisplay'>
       <script type="application/json">
         {
           "consentInstanceId": "SourcePoint",
-          "checkConsentHref": "//localhost/consents/check",
-          "promptUISrc": "//localhost:8080/amp-ui.html",
+          "checkConsentHref": "https://sourcepoint.mgr.consensu.org/consent/v2/amp",
+          "promptUISrc": "https://amp.pm.sourcepoint.mgr.consensu.org/",
 
+          "postPromptUI": "privacy-settings-prompt",
           "clientConfig": {
             "accountId": 22,
             "siteName": "amp.demo",
@@ -117,8 +127,7 @@
             "targetingParams": {
               "foo": "bar"
             }
-          },
-          "postPromptUI": "privacy-settings-prompt"
+          }
         }
       </script>
       <div id="privacy-settings-prompt">
