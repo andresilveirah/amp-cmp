@@ -53,7 +53,7 @@
         var self = this;
         setTimeout(() => {
           self.postMessage('consent-response', actionName, info);
-        }, 300);
+        }, 100);
       };
       AMPClient.prototype.ui = function name(uiAction) {
         this.postMessage('consent-ui', uiAction);
