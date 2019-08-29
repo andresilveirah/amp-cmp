@@ -13,7 +13,7 @@ app.use(logger)
 // https://github.com/ampproject/amphtml/blob/master/extensions/amp-consent/amp-consent.md#checkconsenthref
 app.post('/consents/check', (_req, res) => {
   // TODO: open an PR to add the 'Content-Type: application/json' to <amp-consent>
-  res.status(200).json({ promptIfUnknown: yes })
+  res.status(200).json({ promptIfUnknown: true })
 })
 
 app.listen(config.port, () => console.log(`AMP Dummy Response - listening on port ${config.port}`))
