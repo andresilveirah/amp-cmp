@@ -10,4 +10,4 @@ yarn run server
 yarn run ui
 ```
 
-3. On your browser, visit `http://localhost`
+3. On your browser, visit `http://localhost/test.html`
