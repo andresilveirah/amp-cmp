@@ -7,7 +7,7 @@
 yarn run server
 ```
 ```
-yarn run amp-ui
+yarn run ui
 ```
 
 3. On your browser, visit `http://localhost`
