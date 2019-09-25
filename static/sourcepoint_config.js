@@ -15,12 +15,7 @@
       mmsDomain: 'https://mms.sp-prod.net',
       cmpOrigin: "https://sourcepoint.mgr.consensu.org",
       waitForConsent: true,
-      msg: {
-        targetingParams: clientConfig.targetingParams || {},
-        stageCampaign: clientConfig.stageCampaign === undefined ?
-          false :
-          clientConfig.stageCampaign
-      },
+      targetingParams: clientConfig.targetingParams || {},
       events: window.SourcePointClient(amp, clientConfig.siteId, clientConfig.privacyManagerId)
     }
   }
