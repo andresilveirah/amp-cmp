@@ -3,17 +3,18 @@
   funcName = funcName || "_sp_";
   baseObj = baseObj || window;
 
-  console.log("== Loading AMP Web Page v1 ==");
-  console.log("config from AMP: " + window.name);
+  var siteHref = function(siteName) {
+    return "https://"+siteName;
+  }
 
-  var amp = new window.AMPClient(JSON.parse(window.name));
-  var clientConfig = amp.config.clientConfig;
+  var clientConfig = window.amp.config.clientConfig;
+
   baseObj[funcName] = {
     config: {
       accountId: clientConfig.accountId,
-      siteHref: "https://"+clientConfig.siteName,
-      mmsDomain: 'https://mms.sp-prod.net',
-      cmpOrigin: "https://sourcepoint.mgr.consensu.org",
+      siteHref: siteHref(clientConfig.siteName),
+      mmsDomain: window._SP_CONSTANTS.MMS_DOMAIN,
+      cmpOrigin: window._SP_CONSTANTS.CMP_ORIGIN,
       waitForConsent: true,
       targetingParams: clientConfig.targetingParams || {},
       events: window.SourcePointClient(amp, clientConfig.siteId, clientConfig.privacyManagerId)
