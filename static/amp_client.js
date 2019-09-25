@@ -47,4 +47,5 @@
     this.fullscreen();
   }
   baseObj[funcName] = AMPClient;
+  baseObj["amp"] = new AMPClient(JSON.parse(window.name));
 })("AMPClient", window);

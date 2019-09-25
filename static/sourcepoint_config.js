@@ -5,9 +5,8 @@
 
   console.log("== Loading AMP Web Page v1 ==");
   console.log("config from AMP: " + window.name);
+  var clientConfig = window.amp.config.clientConfig;
 
-  var amp = new window.AMPClient(JSON.parse(window.name));
-  var clientConfig = amp.config.clientConfig;
   baseObj[funcName] = {
     config: {
       accountId: clientConfig.accountId,
