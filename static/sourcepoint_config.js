@@ -12,8 +12,8 @@
     config: {
       accountId: clientConfig.accountId,
       siteHref: "https://"+clientConfig.siteName,
-      mmsDomain: 'https://mms.sp-prod.net',
-      cmpOrigin: "https://sourcepoint.mgr.consensu.org",
+      mmsDomain: window._SP_CONSTANTS.MMS_DOMAIN,
+      cmpOrigin: window._SP_CONSTANTS.CMP_ORIGIN,
       waitForConsent: true,
       targetingParams: clientConfig.targetingParams || {},
       events: window.SourcePointClient(amp, clientConfig.siteId, clientConfig.privacyManagerId)
