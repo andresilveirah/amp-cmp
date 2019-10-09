@@ -101,15 +101,17 @@
   </head>
   <!--
           config for localhost
+          "consentInstanceId": "sourcepoint",
           "checkConsentHref": "//localhost/consents/check",
           "promptUISrc": "//localhost:8080/",
 
           config for remote endpoint
+          "consentInstanceId": "sourcepoint",
           "checkConsentHref": "https://sourcepoint.mgr.consensu.org/consent/v2/amp",
           "promptUISrc": "https://amp.pm.sourcepoint.mgr.consensu.org/",
    -->
   <body>
-    <amp-consent id='consent' layout='nodisplay' type="SourcePoint">
+    <amp-consent id='consent' layout='nodisplay' type='SourcePoint'>
       <script type="application/json">
         {
           "postPromptUI": "privacy-settings-prompt",
