@@ -109,20 +109,16 @@
           "promptUISrc": "https://amp.pm.sourcepoint.mgr.consensu.org/",
    -->
   <body>
-    <amp-consent id='consent' layout='nodisplay'>
+    <amp-consent id='consent' layout='nodisplay' type="SourcePoint">
       <script type="application/json">
         {
-          "consentInstanceId": "SourcePoint",
-          "checkConsentHref": "https://sourcepoint.mgr.consensu.org/consent/v2/amp",
-          "promptUISrc": "https://amp.pm.sourcepoint.mgr.consensu.org/",
-
           "postPromptUI": "privacy-settings-prompt",
           "clientConfig": {
             "accountId": 22,
             "siteName": "amp.demo",
             "siteId": 4400,
             "privacyManagerId": "5d566301ab45d123ed973688",
-            "stageCampaign": false,
+            "stageCampaign": true,
             "targetingParams": {
               "foo": "bar"
             }
