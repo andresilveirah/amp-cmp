@@ -3,7 +3,7 @@
   funcName = funcName || "SourcePointClient";
   baseObj = baseObj || window;
 
-  var SourcePointClient = function (amp, siteId, pmId) {
+  var SourcePointClient = function (amp) {
     var purposeConsent = "none";
     return {
       onMessageReady: function () {
@@ -15,7 +15,7 @@
         amp.dismiss();
       },
       onSPPMObjectReady: function() {
-        console.log("onSPPMObjectReady: arguments: "+JSON.stringify(arguments))
+        console.log("onSPPMObjectReady: arguments: "+JSON.stringify(arguments));
         // called when loadPrivacyManagerModal is available in the _sp_ object
         if(amp.userTriggered()) {
           amp.show();
@@ -25,7 +25,7 @@
         // consents: {"purposeConsent":"all|some|none", "vendorConsent":"all|some|none" }
         // called when the user has taken any action within the PM
         console.log("[onPrivacyManagerAction] arguments: "+JSON.stringify(arguments));
-        purposeConsent = consents.purposeConsent
+        purposeConsent = consents.purposeConsent;
       },
       onPMCancel: function () {
         // called when the user clicks on Cancel within the PM
@@ -39,8 +39,8 @@
           amp.accept(euconsent) :
           amp.reject(euconsent);
       },
-    }
-  }
+    };
+  };
 
   baseObj[funcName] = SourcePointClient;
 })("SourcePointClient", window);

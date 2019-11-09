@@ -27,7 +27,7 @@
       cmpOrigin: window._SP_CONSTANTS.CMP_ORIGIN,
       waitForConsent: true,
       targetingParams: clientConfig.targetingParams || {},
-      events: window.SourcePointClient(amp, clientConfig.siteId, clientConfig.privacyManagerId)
+      events: window.SourcePointClient(window.amp, clientConfig.siteId, clientConfig.privacyManagerId)
     }
   };
 })("_sp_", window);

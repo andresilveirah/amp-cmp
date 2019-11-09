@@ -71,5 +71,5 @@
           }
           readyEventHandlersInstalled = true;
       }
-  }
+  };
 })("onDocumentReady", window);
