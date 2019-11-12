@@ -1,6 +1,6 @@
 {
   "name": "amp-cmp",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Integrating SourcePoint's CMP into AMP",
   "main": "./src/server.js",
   "repository": "https://github.com/andresilveirah/amp-cmp.git",
@@ -12,11 +12,13 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "eslint": "^6.6.0"
+    "eslint": "^6.6.0",
+    "rollup": "1.26.5"
   },
   "scripts": {
+    "build": "rollup -c",
+    "server": "PORT=80 yarn start",
     "start": "node src/server/index.js",
-    "ui": "PORT=8080 yarn start",
-    "server": "PORT=80 yarn start"
+    "ui": "PORT=8080 yarn start"
   }
 }

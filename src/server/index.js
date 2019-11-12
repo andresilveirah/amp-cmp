@@ -8,6 +8,7 @@ const app = express()
 
 app.use(textParser())
 app.use('/', express.static('static'))
+app.use('/dist', express.static('dist'))
 app.use(logger)
 
 app.use((_req, res, next) => {

@@ -1,11 +1,11 @@
 pipeline {
-
   agent any
 
   environment {
     PROD_BUCKET     = 's3://sp-amp/'
     REGION          = 'us-east-1'
-    FOLDER          = 'static'
+    STATIC_FOLDER   = 'static'
+    DIST_FOLDER     = 'dist'
   }
 
   stages {
@@ -24,8 +24,8 @@ pipeline {
       }
       steps {
         sh '''
-          cd "$FOLDER"
-          aws s3 cp . "$PROD_BUCKET" --recursive --region="$REGION" --acl public-read
+          aws s3 cp "$STATIC_FOLDER" "$PROD_BUCKET" --recursive --region="$REGION" --acl public-read
+          aws s3 cp "$DIST_FOLDER" "$PROD_BUCKET" --recursive --region="$REGION" --acl public-read
           aws cloudfront create-invalidation --distribution-id E1PNN09XQ5MY9K --paths /*
         '''
       }
