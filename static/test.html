@@ -111,10 +111,13 @@
           "promptUISrc": "https://amp.pm.sourcepoint.mgr.consensu.org/",
    -->
   <body>
-    <amp-consent id='consent' layout='nodisplay' type='SourcePoint'>
+    <amp-consent id='consent' layout='nodisplay'>
       <script type="application/json">
         {
           "postPromptUI": "privacy-settings-prompt",
+          "consentInstanceId": "sourcepoint",
+          "checkConsentHref": "//localhost/consents/check",
+          "promptUISrc": "//localhost:8080/",
           "clientConfig": {
             "accountId": 22,
             "siteName": "amp.demo",
