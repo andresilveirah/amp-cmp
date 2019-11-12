@@ -3,42 +3,39 @@
   funcName = funcName || "SourcePointClient";
   baseObj = baseObj || window;
 
+  var loggedFunction = function(name, callback) {
+    return function() {
+      console.log("["+name+"] arguments: "+JSON.stringify(arguments));
+      callback(arguments)
+    }
+  };
+
   var SourcePointClient = function (amp) {
     var purposeConsent = "none";
     return {
-      onMessageReady: function () {
-        console.log("onMessageReady: "+JSON.stringify(arguments));
+      onMessageReady: loggedFunction('onMessageReady', function() {
         amp.show();
-      },
-      onMessageChoiceError: function (_error) {
-        console.error("onMessageChoiceError: arguments: "+JSON.stringify(arguments));
+      }),
+      onMessageChoiceError: loggedFunction('onMessageChoiceError', function (_error) {
         amp.dismiss();
-      },
-      onSPPMObjectReady: function() {
-        console.log("onSPPMObjectReady: arguments: "+JSON.stringify(arguments));
-        // called when loadPrivacyManagerModal is available in the _sp_ object
+      }),
+      onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function() {
         if(amp.userTriggered()) {
           amp.show();
         }
-      },
-      onPrivacyManagerAction: function (consents) {
+      }),
+      onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (consents) {
         // consents: {"purposeConsent":"all|some|none", "vendorConsent":"all|some|none" }
-        // called when the user has taken any action within the PM
-        console.log("[onPrivacyManagerAction] arguments: "+JSON.stringify(arguments));
         purposeConsent = consents.purposeConsent;
-      },
-      onPMCancel: function () {
-        // called when the user clicks on Cancel within the PM
-        console.log("[onPMCancel] arguments: "+JSON.stringify(arguments));
+      }),
+      onPMCancel: loggedFunction('onPMCancel', function () {
         if(amp.userTriggered()) amp.dismiss();
-      },
-      onConsentReady: function (consentUUID, euconsent) {
-        // called once when the user is done interacting with the message OR the PM
-        console.log("[onConsentReady] consentUUID: "+consentUUID+" euconsent: "+euconsent);
+      }),
+      onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent) {
         purposeConsent === "all" ?
           amp.accept(euconsent) :
           amp.reject(euconsent);
-      },
+      })
     };
   };
 

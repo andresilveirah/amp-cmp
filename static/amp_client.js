@@ -17,9 +17,7 @@
   };
   AMPClient.prototype.action = function (actionName, info) {
     var self = this;
-    setTimeout(function () {
-      self.postMessage('consent-response', actionName, info);
-    }, 100);
+    setTimeout(function () { self.postMessage('consent-response', actionName, info); }, 100);
   };
   AMPClient.prototype.ui = function name(uiAction) {
     this.postMessage('consent-ui', uiAction);
@@ -38,9 +36,7 @@
   };
   AMPClient.prototype.fullscreen = function () {
     var self = this;
-    setTimeout(() => {
-      self.ui('enter-fullscreen');
-    }, 100);
+    setTimeout(() => { self.ui('enter-fullscreen'); }, 100);
   };
   AMPClient.prototype.show = function () {
     this.ready();
