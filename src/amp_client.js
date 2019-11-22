@@ -12,7 +12,7 @@ AMPClient.prototype.postMessage = function(type, action, info) {
 };
 AMPClient.prototype.action = function (actionName, info) {
   var self = this;
-  setTimeout(function () { self.postMessage('consent-response', actionName, info); }, 100);
+  setTimeout(function () { self.postMessage('consent-response', actionName, info); }, 300);
 };
 AMPClient.prototype.ui = function name(uiAction) {
   this.postMessage('consent-ui', uiAction);
@@ -31,7 +31,7 @@ AMPClient.prototype.ready = function () {
 };
 AMPClient.prototype.fullscreen = function () {
   var self = this;
-  setTimeout(() => { self.ui('enter-fullscreen'); }, 100);
+  setTimeout(() => { self.ui('enter-fullscreen'); }, 300);
 };
 AMPClient.prototype.show = function () {
   this.ready();
