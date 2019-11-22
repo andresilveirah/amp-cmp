@@ -54,7 +54,7 @@ window._sp_ = {
     cmpOrigin: CMP_ORIGIN,
     waitForConsent: true,
     targetingParams: clientConfig.targetingParams || {},
-    events: SourcePointClient(amp, clientConfig.siteId, clientConfig.privacyManagerId)
+    events: SourcePointClient(amp)
   }
 };
 
