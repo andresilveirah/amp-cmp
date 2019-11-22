@@ -3,15 +3,15 @@
 
 1. Install the dependencies with
 ```
-yarn run install
+npm i
 ```
 
 2. Open two tabs on your console and run:
 ```
-yarn run server
+npm run server
 ```
 ```
-yarn run ui
+npm run ui
 ```
 
 3. On your browser, visit `http://localhost/test.html`
