@@ -17,8 +17,8 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "server": "PORT=80 yarn start",
+    "server": "PORT=80 npm start",
     "start": "node src/server/index.js",
-    "ui": "PORT=8080 yarn start"
+    "ui": "PORT=8080 npm start"
   }
 }

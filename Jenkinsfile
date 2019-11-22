@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    PROD_BUCKET     = 's3://sp-amp/'
+    PROD_BUCKET     = 's3://sp-amp'
     REGION          = 'us-east-1'
     STATIC_FOLDER   = 'static'
     DIST_FOLDER     = 'dist'
@@ -18,6 +18,16 @@ pipeline {
         }
       }
     }
+    stage('Build') {
+      steps {
+        wrap([$class: 'BuildUser']) {
+          sh '''
+            npm install
+            npm run build
+          '''
+        }
+      }
+    }
     stage('Deploy Production') {
       when {
         branch 'master'
@@ -25,7 +35,7 @@ pipeline {
       steps {
         sh '''
           aws s3 cp "$STATIC_FOLDER" "$PROD_BUCKET" --recursive --region="$REGION" --acl public-read
-          aws s3 cp "$DIST_FOLDER" "$PROD_BUCKET" --recursive --region="$REGION" --acl public-read
+          aws s3 cp "$DIST_FOLDER" "$PROD_BUCKET/dist/" --recursive --region="$REGION" --acl public-read
           aws cloudfront create-invalidation --distribution-id E1PNN09XQ5MY9K --paths /*
         '''
       }

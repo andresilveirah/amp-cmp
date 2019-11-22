@@ -16,11 +16,11 @@
     return function() {
       console.log("["+name+"] arguments: "+JSON.stringify(arguments));
       callback(arguments);
-    }
+    };
   };
 
   function SourcePointClient (amp) {
-    var purposeConsent = "";
+    var purposeConsent = "none";
     return {
       onMessageReady: loggedFunction('onMessageReady', function() {
         amp.show();
