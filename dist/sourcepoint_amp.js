@@ -15,12 +15,15 @@
   var loggedFunction = function(name, callback) {
     return function() {
       console.log("["+name+"] arguments: "+JSON.stringify(arguments));
-      callback(arguments);
+      callback.apply(null, Array.prototype.slice.call(arguments));
     };
   };
 
+  var ACCEPT_ALL_CHOICE_TYPE = 11;
+  var ACCEPT_ALL = "all";
+  var REJECT_ALL = "none";
+
   function SourcePointClient (amp) {
-    var purposeConsent = "none";
     return {
       onMessageReady: loggedFunction('onMessageReady', function() {
         amp.show();
@@ -33,15 +36,18 @@
           amp.show();
         }
       }),
+      onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (_choiceId, choiceType) {
+        amp.purposeConsent = choiceType === ACCEPT_ALL_CHOICE_TYPE ? ACCEPT_ALL : REJECT_ALL;
+      }),
       onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (consents) {
         // consents: {"purposeConsent":"all|some|none", "vendorConsent":"all|some|none" }
-        purposeConsent = consents.purposeConsent;
+        amp.purposeConsent = consents.purposeConsent;
       }),
       onPMCancel: loggedFunction('onPMCancel', function () {
         if(amp.userTriggered()) amp.dismiss();
       }),
       onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent) {
-        purposeConsent === "all" ?
+        amp.purposeConsent === ACCEPT_ALL ?
           amp.accept(euconsent) :
           amp.reject(euconsent);
       })
@@ -62,7 +68,7 @@
   };
   AMPClient.prototype.action = function (actionName, info) {
     var self = this;
-    setTimeout(function () { self.postMessage('consent-response', actionName, info); }, 100);
+    setTimeout(function () { self.postMessage('consent-response', actionName, info); }, 300);
   };
   AMPClient.prototype.ui = function name(uiAction) {
     this.postMessage('consent-ui', uiAction);
@@ -81,7 +87,7 @@
   };
   AMPClient.prototype.fullscreen = function () {
     var self = this;
-    setTimeout(() => { self.ui('enter-fullscreen'); }, 100);
+    setTimeout(() => { self.ui('enter-fullscreen'); }, 300);
   };
   AMPClient.prototype.show = function () {
     this.ready();
@@ -140,7 +146,7 @@
       cmpOrigin: CMP_ORIGIN,
       waitForConsent: true,
       targetingParams: clientConfig.targetingParams || {},
-      events: SourcePointClient(amp, clientConfig.siteId, clientConfig.privacyManagerId)
+      events: SourcePointClient(amp)
     }
   };
 
