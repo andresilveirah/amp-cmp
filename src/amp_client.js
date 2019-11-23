@@ -1,41 +1,49 @@
-function AMPClient (config) {
-  this.config = config;
+function AMPClient (config, onAMPMessage) {
+  this._config = config;
+  this._onAMPMessage = onAMPMessage;
 }
 AMPClient.prototype.userTriggered = function () {
-  return this.config.promptTrigger === 'action';
+  return this._config.promptTrigger === 'action';
 };
-AMPClient.prototype.postMessage = function(type, action, info) {
-  var payload = { type: type, action: action };
+AMPClient.prototype._postMessage = function (type, action, info) {
+  console.info('postMessage: '+type+', '+action+' '+ (info ? JSON.stringify(info) : ''));
+  var payload = { 
+    type: type,
+    action: action
+  };
   if(info !== undefined) payload.info = info;
-  console.log('postMessage: '+type+', '+action+' '+ (info ? JSON.stringify(info) : ''));
-  window.parent.postMessage(payload, '*');
+  this._onAMPMessage(payload);
 };
-AMPClient.prototype.action = function (actionName, info) {
+AMPClient.prototype._action = function (actionName, info) {
   var self = this;
-  setTimeout(function () { self.postMessage('consent-response', actionName, info); }, 300);
+  setTimeout(function () { 
+    self._postMessage('consent-response', actionName, info);
+  }, 100);
 };
-AMPClient.prototype.ui = function name(uiAction) {
-  this.postMessage('consent-ui', uiAction);
+AMPClient.prototype._ui = function name(uiAction) {
+  this._postMessage('consent-ui', uiAction);
 };
-AMPClient.prototype.accept = function(consentString) {
-  this.action('accept', consentString);
+AMPClient.prototype.accept = function (consentString) {
+  this._action('accept', consentString);
 };
-AMPClient.prototype.reject = function(consentString) {
-  this.action('reject', consentString);
+AMPClient.prototype.reject = function (consentString) {
+  this._action('reject', consentString);
 };
-AMPClient.prototype.dismiss = function() {
-  this.action('dismiss');
+AMPClient.prototype.dismiss = function () {
+  this._action('dismiss');
 };
-AMPClient.prototype.ready = function () {
-  this.ui('ready');
+AMPClient.prototype._ready = function () {
+  this._ui('ready');
 };
-AMPClient.prototype.fullscreen = function () {
+AMPClient.prototype._fullscreen = function () {
   var self = this;
-  setTimeout(() => { self.ui('enter-fullscreen'); }, 300);
+  setTimeout(function () { 
+    self._ui('enter-fullscreen');
+  }, 200);
 };
 AMPClient.prototype.show = function () {
-  this.ready();
-  this.fullscreen();
+  this._ready();
+  this._fullscreen();
 };
 
 export default AMPClient;

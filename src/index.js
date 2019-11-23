@@ -33,8 +33,12 @@ var siteHref = function(siteName) {
   return "https://"+siteName;
 };
 
-var amp = new AMPClient(JSON.parse(window.name));
-var clientConfig = amp.config.clientConfig;
+var onAMPMessage = function(payload) {
+  window.parent.postMessage(payload, '*')
+}
+var ampConfig = JSON.parse(window.name)
+var amp = new AMPClient(ampConfig, onAMPMessage);
+var clientConfig = ampConfig.clientConfig;
 
 // set query params for triggering the message or the PM directly
 if (history && history.pushState) {
