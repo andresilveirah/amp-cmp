@@ -12,11 +12,16 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "babel-jest": "^24.9.0",
     "eslint": "^6.6.0",
+    "jest": "^24.9.0",
     "rollup": "1.26.5"
   },
   "scripts": {
     "build": "rollup -c",
+    "test": "jest",
     "server": "PORT=80 npm start",
     "start": "node src/server/index.js",
     "ui": "PORT=8080 npm start"
