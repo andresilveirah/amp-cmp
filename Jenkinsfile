@@ -6,6 +6,7 @@ pipeline {
     REGION          = 'us-east-1'
     STATIC_FOLDER   = 'static'
     DIST_FOLDER     = 'dist'
+    SLACK_TOKEN     = credentials('jenkins-pipeline-slack-token')
   }
 
   stages {
@@ -13,7 +14,7 @@ pipeline {
       steps {
         wrap([$class: 'BuildUser']) {
           sh '''
-            curl -s -X "POST" -H "Content-Type: application/json" -d '{"username":"Deploy Hamster","icon_emoji":":seasonal_hamster:","channel":"dev_deployments","text":"*'${BUILD_USER_ID}'* started to deploy *'${JOB_NAME}'* to staging.  <'${BUILD_URL}'console|View console logs.>"}' "https://hooks.slack.com/services/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"
+            curl -s -X "POST" -H "Content-Type: application/json" -d '{"username":"Deploy Hamster","icon_emoji":":seasonal_hamster:","channel":"dev_deployments","text":"*'${BUILD_USER_ID}'* started to deploy *'${JOB_NAME}'* to staging.  <'${BUILD_URL}'console|View console logs.>"}' "https://hooks.slack.com/services/T02JD673S/$SLACK_TOKEN"
           '''
         }
       }
@@ -46,7 +47,7 @@ pipeline {
       }
       steps {
         sh '''
-          curl -s -X "POST" -H "Content-Type: application/json" -d '{"username":"Deploy Hamster","icon_emoji":":seasonal_hamster:","channel":"dev_deployments","attachments":[{"text":"*'${JOB_NAME}'* deployment succeeded on production!","color":"#3FCC97","mrkdwn_in":["text"]}]}' "https://hooks.slack.com/services/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"
+          curl -s -X "POST" -H "Content-Type: application/json" -d '{"username":"Deploy Hamster","icon_emoji":":seasonal_hamster:","channel":"dev_deployments","attachments":[{"text":"*'${JOB_NAME}'* deployment succeeded on production!","color":"#3FCC97","mrkdwn_in":["text"]}]}' "https://hooks.slack.com/services/T02JD673S/$SLACK_TOKEN"
         '''
       }
     }
