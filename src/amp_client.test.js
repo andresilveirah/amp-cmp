@@ -1,9 +1,11 @@
 import AMPClient from './amp_client'
 
 jest.useFakeTimers()
-const onAMPMessage = jest.fn()
+let onAMPMessage
 
 describe('AMPClient', () => {
+  beforeEach(() => { onAMPMessage = jest.fn() });
+
   describe('userTriggered', () => {
     describe('when config.promptTrigger is \'action\'', () => {
       it('returns true', () => {
@@ -35,6 +37,15 @@ describe('AMPClient', () => {
         expect(onAMPMessage).not.toHaveBeenCalledWith({ type: 'consent-ui', action: 'enter-fullscreen' })
         jest.advanceTimersByTime(1)
         expect(onAMPMessage).toHaveBeenCalledWith({ type: 'consent-ui', action: 'enter-fullscreen' })
+      })
+
+      describe('when config.clientConfig.fullscreen is false', () => {
+        it('does not call onAMPMessage with \'enter-fullscreen\'', () => {
+          const amp = new AMPClient({ clientConfig: { fullscreen: false }}, onAMPMessage)
+          amp.show()
+          jest.runAllTimers()
+          expect(onAMPMessage).not.toHaveBeenCalledWith({ type: 'consent-ui', action: 'enter-fullscreen' })
+        })
       })
     })
   })

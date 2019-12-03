@@ -1,13 +1,20 @@
 function AMPClient (config, onAMPMessage) {
   this._config = config;
   this._onAMPMessage = onAMPMessage;
+  this._config.fullscreen = config.clientConfig &&
+    config.clientConfig.fullscreen === false ?
+      false :
+      true;
 }
 AMPClient.prototype.userTriggered = function () {
   return this._config.promptTrigger === 'action';
 };
+AMPClient.prototype.isFullScreen = function () {
+  return this._config.fullscreen;
+};
 AMPClient.prototype._postMessage = function (type, action, info) {
   console.info('postMessage: '+type+', '+action+' '+ (info ? JSON.stringify(info) : ''));
-  var payload = { 
+  var payload = {
     type: type,
     action: action
   };
@@ -16,7 +23,7 @@ AMPClient.prototype._postMessage = function (type, action, info) {
 };
 AMPClient.prototype._action = function (actionName, info) {
   var self = this;
-  setTimeout(function () { 
+  setTimeout(function () {
     self._postMessage('consent-response', actionName, info);
   }, 100);
 };
@@ -37,13 +44,15 @@ AMPClient.prototype._ready = function () {
 };
 AMPClient.prototype._fullscreen = function () {
   var self = this;
-  setTimeout(function () { 
+  setTimeout(function () {
     self._ui('enter-fullscreen');
   }, 200);
 };
 AMPClient.prototype.show = function () {
   this._ready();
-  this._fullscreen();
+  if(this.isFullScreen()){
+    this._fullscreen();
+  }
 };
 
 export default AMPClient;
