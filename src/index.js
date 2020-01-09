@@ -5,9 +5,9 @@ import AMPClient from './amp_client';
 console.info("== Loading AMP Client v1 ==");
 console.debug("config from AMP: " + window.name);
 
-var stagingVarsUrl = function(env, mmsDomain) {
+var stagingVarsUrl = function(mmsDomain) {
   mmsDomain = mmsDomain || MMS_DOMAIN;
-  return mmsDomain + "/mms/qa_set_env?env="+env;
+  return mmsDomain + "/mms/qa_set_env?env=stage";
 };
 
 var loadMessageScript = function(scriptSource) {
@@ -17,16 +17,18 @@ var loadMessageScript = function(scriptSource) {
   document.head.appendChild(script);
 };
 
-var setEnv = function(env, onReadyCallback) {
+var setStage = function(onReadyCallback) {
   var request = new XMLHttpRequest();
-  request.open("GET", stagingVarsUrl(env));
   request.withCredentials = true;
-  request.addEventListener("load", function () { onReadyCallback(); });
+  request.open("GET", stagingVarsUrl());
+  request.addEventListener("load", onReadyCallback);
   request.send();
 };
 
-var loadMessage = function(env) {
-  setEnv(env, loadMessageScript);
+var loadMessage = function(isStageCampaign) {
+  isStageCampaign ?
+    setStage(loadMessageScript) :
+    loadMessageScript();
 };
 
 var siteHref = function(siteName) {
@@ -62,4 +64,4 @@ window._sp_ = {
   }
 };
 
-loadMessage(clientConfig.stageCampaign ? "stage" : "public");
+loadMessage(clientConfig.stageCampaign);
