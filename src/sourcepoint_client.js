@@ -6,8 +6,9 @@ var loggedFunction = function(name, callback) {
 };
 
 var ACCEPT_ALL_CHOICE_TYPE = 11;
-var ACCEPT_ALL = "all"
-var REJECT_ALL = "none"
+var SHOW_PM_CHOICE_TYPE = 12;
+var ACCEPT_ALL = "all";
+var REJECT_ALL = "none";
 
 export default function (amp) {
   return {
@@ -23,7 +24,16 @@ export default function (amp) {
       }
     }),
     onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (_choiceId, choiceType) {
-      amp.purposeConsent = choiceType === ACCEPT_ALL_CHOICE_TYPE ? ACCEPT_ALL : REJECT_ALL
+      switch(choiceType) {
+        case SHOW_PM_CHOICE_TYPE:
+          amp.fullscreen();
+          break;
+        case ACCEPT_ALL_CHOICE_TYPE:
+          amp.purposeConsent = ACCEPT_ALL;
+          break;
+        default:
+          amp.purposeConsent = REJECT_ALL
+      }
     }),
     onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (consents) {
       // consents: {"purposeConsent":"all|some|none", "vendorConsent":"all|some|none" }
