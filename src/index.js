@@ -10,10 +10,10 @@ var stagingVarsUrl = function(mmsDomain) {
   return mmsDomain + "/mms/qa_set_env?env=stage";
 };
 
-var loadMessageScript = function(scriptSource) {
+var loadMessageScript = function() {
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src = scriptSource || MSG_SCRIPT_URL;
+  script.src = MSG_SCRIPT_URL;
   document.head.appendChild(script);
 };
 
