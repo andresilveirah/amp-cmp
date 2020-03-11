@@ -1,17 +1,17 @@
 import SourcePointClient from './sourcepoint_client'
+import AMPClient from './amp_client'
 
 let ampClient = {}
 let sourcepoint = {}
 
+const prototypeDoubleOf = (obj) => Object
+  .getOwnPropertyNames(obj.prototype)
+  .filter(prop => typeof obj.prototype[prop] === 'function')
+  .reduce((allProps, prop) => ({ ...allProps, [prop]: jest.fn() }), {})
+
 describe('SourcePointClient', () => {
   beforeEach(() => {
-    ampClient = {
-      show: jest.fn(),
-      dismiss: jest.fn(),
-      userTriggered: jest.fn(),
-      accept: jest.fn(),
-      reject: jest.fn()
-    }
+    ampClient = prototypeDoubleOf(AMPClient)
     sourcepoint = SourcePointClient(ampClient)
   })
 
@@ -48,14 +48,21 @@ describe('SourcePointClient', () => {
   })
 
   describe('onMessageChoiceSelect', () => {
-    describe('when called with choiceType equals to 11', () => {
+    describe('when called with choiceType equals to 11 (accept all)', () => {
       it('sets ampClient.purposeConsent to "all"', () => {
         sourcepoint.onMessageChoiceSelect(null, 11)
         expect(ampClient.purposeConsent).toBe("all")
       })
     })
 
-    describe('when called with choiceType is different than 11', () => {
+    describe('when called with choiceType equals to 12 (show PM)', () => {
+      it('calls ampClient.fullscreen', () => {
+        sourcepoint.onMessageChoiceSelect(null, 12)
+        expect(ampClient.fullscreen).toHaveBeenCalled()
+      })
+    })
+
+    describe('when called with choiceType is different than 11 and 15', () => {
       it('sets ampClient.purposeConsent to "none"', () => {
         sourcepoint.onMessageChoiceSelect(null, null)
         expect(ampClient.purposeConsent).toBe("none")

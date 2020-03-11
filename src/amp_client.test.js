@@ -29,24 +29,6 @@ describe('AMPClient', () => {
         amp.show()
         expect(onAMPMessage).toHaveBeenCalledWith({ type: 'consent-ui', action: 'ready' })
       })
-
-      it('calls onAMPMessage with \'enter-fullscreen\' in 200 ms', () => {
-        const amp = new AMPClient({}, onAMPMessage)
-        amp.show()
-        jest.advanceTimersByTime(199)
-        expect(onAMPMessage).not.toHaveBeenCalledWith({ type: 'consent-ui', action: 'enter-fullscreen' })
-        jest.advanceTimersByTime(1)
-        expect(onAMPMessage).toHaveBeenCalledWith({ type: 'consent-ui', action: 'enter-fullscreen' })
-      })
-
-      describe('when config.clientConfig.fullscreen is false', () => {
-        it('does not call onAMPMessage with \'enter-fullscreen\'', () => {
-          const amp = new AMPClient({ clientConfig: { fullscreen: false }}, onAMPMessage)
-          amp.show()
-          jest.runAllTimers()
-          expect(onAMPMessage).not.toHaveBeenCalledWith({ type: 'consent-ui', action: 'enter-fullscreen' })
-        })
-      })
     })
   })
 
