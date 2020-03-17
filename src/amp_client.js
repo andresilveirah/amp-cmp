@@ -9,7 +9,8 @@ AMPClient.prototype._postMessage = function (type, action, info) {
   console.info('postMessage: '+type+', '+action+' '+ (info ? JSON.stringify(info) : ''));
   var payload = {
     type: type,
-    action: action
+    action: action,
+    initialHeight: '60vh'
   };
   if(info !== undefined) payload.info = info;
   this._onAMPMessage(payload);
