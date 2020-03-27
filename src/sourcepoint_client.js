@@ -15,8 +15,9 @@ export default function (amp) {
     onMessageReady: loggedFunction('onMessageReady', function() {
       amp.show();
     }),
-    onMessageChoiceError: loggedFunction('onMessageChoiceError', function (_error) {
-      amp.dismiss();
+    onMessageChoiceError: loggedFunction('onMessageChoiceError', function (error) {
+      console.error(error)
+      amp.reject("");
     }),
     onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function() {
       if(amp.userTriggered()) {
