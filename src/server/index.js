@@ -24,4 +24,13 @@ app.post('/consents/check', (_req, res) => {
   res.status(200).json({ promptIfUnknown: true })
 })
 
+app.post('/consents/checkCCPA', (_req, res) => {
+  // TODO: open an PR to add the 'Content-Type: application/json' to <amp-consent>
+  res.status(200).json({
+    "consentRequired": true,
+    "expireCache": true,
+    "consentStateValue": "accepted"
+  })
+})
+
 app.listen(config.port, () => console.log(`AMP - listening on port ${config.port}`))
