@@ -1,3 +1,4 @@
+// start amp_client.js
 function AMPClient (config, onAMPMessage) {
   this._config = config;
   this._onAMPMessage = onAMPMessage;
@@ -6,7 +7,6 @@ AMPClient.prototype.userTriggered = function () {
   return this._config.promptTrigger === 'action';
 };
 AMPClient.prototype._postMessage = function (type, action, info) {
-  console.info('postMessage: '+type+', '+action+' '+ (info ? JSON.stringify(info) : ''));
   var payload = {
     type: type,
     action: action,
@@ -44,3 +44,4 @@ AMPClient.prototype.show = function () {
 };
 
 export default AMPClient;
+// end amp_client.js
