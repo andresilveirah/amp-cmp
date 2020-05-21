@@ -12,7 +12,7 @@ app.use('/dist', express.static('dist'))
 app.use(logger)
 
 app.use((_req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://dev.local")
+  res.header("Access-Control-Allow-Origin", "http://localhost")
   res.header('Access-Control-Allow-Credentials', "true")
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
