@@ -7,6 +7,7 @@ AMPClient.prototype.userTriggered = function () {
   return this._config.promptTrigger === 'action';
 };
 AMPClient.prototype._postMessage = function (type, action, info) {
+  console.info('postMessage: '+type+', '+action+' '+ (info ? JSON.stringify(info) : ''));
   var payload = {
     type: type,
     action: action,
