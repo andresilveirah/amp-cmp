@@ -119,8 +119,8 @@
         {
             "consentRequired": "remote",
             "consentInstanceId": "sourcepoint",
-            "checkConsentHref": "//localhost/consents/check",
-            "promptUISrc": "//localhost:8080/",
+            "checkConsentHref": "https://wrapper-api.sp-prod.net/tcfv2/v1/amp",
+            "promptUISrc": "https://amp.sp-prod.net/",
             "postPromptUI": "consent-ui",
             "clientConfig": {
                 "accountId": 22,
@@ -130,7 +130,7 @@
                 "isTCFV2": true,
                 "pmTab": "vendors",
                 "stageCampaign": false,
-                "env": "localProd",
+                "env": "prod",
                 "targetingParams": {
                     "bucket": "rheinpfalz-1"
                 }
@@ -206,90 +206,6 @@ test:
     <title>Page Title</title>
 
 
-
-
-
-    <script>
-      // window._sp_ = {
-      //     config: {
-      //         accountId: 1145,
-      //         propertyHref: "http://source-point.djphan.repl.co/",
-      //         wrapperAPIOrigin: "https://wrapper-api.sp-prod.net/tcfv2",
-      //         propertyId: 6796,
-      //         mmsDomain: "https://message.sp-prod.net"
-      //     }
-      // }
-
-      //     window._sp_ = {
-      // config: {
-      //     accountId: 22,
-      //     wrapperAPIOrigin: "https://wrapper-api.sp-prod.net/tcfv2?env=stage",
-      //     propertyHref: "ed.sp-demo.com/",
-      //     propertyId: 485,
-      //     mmsDomain: "https://mms.sp-stage.net"
-      // }
-      //     config:  {
-      //         accountId: 22,
-      //         wrapperAPIOrigin: "https://wrapper-api.sp-prod.net/tcfv2",
-      //         propertyHref: "http://ed.sp-demo.com/test1.html",
-      //         propertyId: 7131,
-      //         mmsDomain: "https://message.sp-prod.net"
-      //     }
-      // } stock
-
-
-      window._sp_ = {
-        config: {
-          accountId: 22,
-          propertyHref: "http://ed.sp-demo.com/test3.html",
-          propertyId: 7131,
-          wrapperAPIOrigin: "https://wrapper-api.sp-prod.net/tcfv2",
-          mmsDomain: "https://message.sp-prod.net",
-          pmTab: 'vendors',
-          consentLanguage: 'cs',
-          targetingParams: {
-
-            bucket: 'rheinpfalz-1'
-
-          },
-          events: {
-            onMessageReady: function () {
-              console.log('onMessageReady')
-            },
-            onMessageChoiceSelect: function (choice_id, choice_type_id) {
-              console.log('onMessageChoiceSelect choice_id: ', choice_id);
-              console.log('onMessageChoiceSelect choice_id: ', choice_type_id);
-            },
-            onPrivacyManagerAction: function (pmData) {
-              console.log('onPrivacyManagerAction', pmData)
-            },
-            onMessageChoiceError: function (err) {
-              console.log('onMessageChoiceError', err)
-            },
-            onConsentReady: function (consentUUID, euconsent) {
-              console.log('onConsentReady')
-              console.log('consentUUID', consentUUID)
-              console.log('euconsent', euconsent)
-            },
-            onPMCancel: function () {
-              console.log('onPMCancel')
-            },
-            onMessageReceiveData: function (data) {
-              console.log('onMessageReceiveData', data)
-              console.log(JSON.stringify(data));
-            },
-            onSPPMObjectReady: function () {
-              //console.log('onSPPMObjectReady', window._sp_.loadPrivacyManagerModal)
-              // window._sp_.loadPrivacyManager(4400, '5d566301ab45d123ed973688')
-            }
-          },
-        }
-      }
-
-
-
-
-    </script>
 
 <body>
 

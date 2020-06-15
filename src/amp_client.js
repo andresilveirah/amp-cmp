@@ -14,6 +14,9 @@ AMPClient.prototype._postMessage = function (type, action, info) {
     initialHeight: '60vh'
   };
   if(info !== undefined) payload.info = info;
+  if (action === 'accept'  || action === 'reject') {
+    payload.consentMetadata = {};
+  }
   this._onAMPMessage(payload);
 };
 AMPClient.prototype._action = function (actionName, info) {
