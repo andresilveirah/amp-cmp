@@ -21,7 +21,7 @@ var loadMessageScript = function() {
 var loadMessageScriptTCFV2 = function() {
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src = TCFV2_SCRIPT_URL;
+  script.src = window._sp_.config.scriptUrl || TCFV2_SCRIPT_URL;
   document.head.appendChild(script);
 };
 
@@ -77,8 +77,8 @@ if (!clientConfig.isCCPA && !clientConfig.isTCFV2) {
       siteId: clientConfig.siteId,
       privacyManagerId: clientConfig.privacyManagerId,
       siteHref: siteHref(clientConfig.siteName),
-      mmsDomain: MMS_DOMAIN,
-      cmpOrigin: CMP_ORIGIN,
+      mmsDomain: clientConfig.mmsDomain || MMS_DOMAIN,
+      cmpOrigin: clientConfig.cmpOrigin  || CMP_ORIGIN,
       waitForConsent: true,
       targetingParams: clientConfig.targetingParams || {},
       events: gdpr_events(amp),
@@ -94,10 +94,11 @@ if (!clientConfig.isCCPA && !clientConfig.isTCFV2) {
       propertyHref: clientConfig.propertyHref,
       pmTab: clientConfig.pmTab,
       isTCFV2: true,
+      scriptUrl: clientConfig.scriptUrl || TCFV2_SCRIPT_URL,
       privacyManagerId: clientConfig.privacyManagerId,
       consentLanguage: clientConfig.consentLanguage,
-      mmsDomain: MMS_DOMAIN,
-      wrapperAPIOrigin: WRAPPER_API_ORIGIN,
+      mmsDomain: clientConfig.mmsDomain || MMS_DOMAIN,
+      wrapperAPIOrigin: clientConfig.wrapperAPIOrigin || WRAPPER_API_ORIGIN,
       env: clientConfig.env,
       targetingParams: clientConfig.targetingParams || {},
       events: tcfv2_events(amp),
@@ -108,8 +109,8 @@ if (!clientConfig.isCCPA && !clientConfig.isTCFV2) {
   console.log("run ccpa");
   window._sp_ccpa = {
     config: {
-      mmsDomain: CCPA_MMS_DOMAIN,
-      ccpaOrigin: CCPA_ORIGIN,
+      mmsDomain: clientConfig.mmsDomain || CCPA_MMS_DOMAIN,
+      ccpaOrigin: clientConfig.ccpaOrigin || CCPA_ORIGIN,
       accountId: clientConfig.accountId,
       getDnsMsgMms: clientConfig.getDnsMsgMms,
       alwaysDisplayDns: clientConfig.alwaysDisplayDns,
