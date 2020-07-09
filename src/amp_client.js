@@ -11,7 +11,8 @@ AMPClient.prototype._postMessage = function (type, action, info) {
   var payload = {
     type: type,
     action: action,
-    initialHeight: '60vh'
+    initialHeight: '60vh',
+    border: false
   };
   if(info !== undefined) payload.info = info;
   if (action === 'accept'  || action === 'reject') {
