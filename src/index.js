@@ -99,6 +99,7 @@ if (!clientConfig.isCCPA && !clientConfig.isTCFV2) {
       consentLanguage: clientConfig.consentLanguage,
       mmsDomain: clientConfig.mmsDomain || MMS_DOMAIN,
       wrapperAPIOrigin: clientConfig.wrapperAPIOrigin || WRAPPER_API_ORIGIN,
+      campaignEnv: clientConfig.stageCampaign ? "stage" : "prod",
       env: clientConfig.env,
       targetingParams: clientConfig.targetingParams || {},
       events: tcfv2_events(amp),
