@@ -14,7 +14,7 @@ pipeline {
       steps {
         wrap([$class: 'BuildUser']) {
           sh '''
-            curl -s -X "POST" -H "Content-Type: application/json" -d '{"username":"Deploy Hamster","icon_emoji":":seasonal_hamster:","channel":"dev_deployments","text":"*'${BUILD_USER_ID}'* started to deploy *'${JOB_NAME}'* to staging.  <'${BUILD_URL}'console|View console logs.>"}' "https://hooks.slack.com/services/T02JD673S/$SLACK_TOKEN"
+            curl -s -X "POST" -H "Content-Type: application/json" -d '{"username":"Deploy Hamster","icon_emoji":":seasonal_hamster:","channel":"dev_deployments","text":"*'${BUILD_USER_ID}'* started to deploy *'${JOB_NAME}'* to production.  <'${BUILD_URL}'console|View console logs.>"}' "https://hooks.slack.com/services/T02JD673S/$SLACK_TOKEN"
           '''
         }
       }
