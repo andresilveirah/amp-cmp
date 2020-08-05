@@ -43,6 +43,10 @@ function gdpr_events(amp) {
       // consents: {"purposeConsent":"all|some|none", "vendorConsent":"all|some|none" }
       amp.purposeConsent = consents.purposeConsent
     }),
+    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (consents) {
+      // consents: {"purposeConsent":"all|some|none", "vendorConsent":"all|some|none" }
+      amp.purposeConsent = consents.purposeConsent
+    }),
     onPMCancel: loggedFunction('onPMCancel', function () {
       if(amp.userTriggered()) amp.dismiss();
     }),
@@ -80,6 +84,9 @@ function ccpa_events(amp) {
       }
     },
     onPrivacyManagerAction: function (pmData) {
+      amp.purposeConsent = pmData.purposeConsent;
+    },
+    onPrivacyManagerActionStatus: function (pmData) {
       amp.purposeConsent = pmData.purposeConsent;
     },
     onMessageChoiceError: function (err) {
@@ -149,6 +156,10 @@ function tcfv2_events(amp) {
       }
     }),
     onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (consents) {
+      // consents: { "all|some|none" }
+      amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
+    }),
+    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (consents) {
       // consents: { "all|some|none" }
       amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
     }),
