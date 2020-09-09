@@ -6,6 +6,9 @@ import AMPClient from './amp_client';
 console.info("== Loading AMP Client v1 ==");
 console.debug("config from AMP: " + window.name);
 
+const urlParams = new URLSearchParams(window.location.search);
+const authId = urlParams.get('authId');
+
 var stagingVarsUrl = function(mmsDomain) {
   mmsDomain = mmsDomain || MMS_DOMAIN;
   return mmsDomain + "/mms/qa_set_env?env=stage";
@@ -105,6 +108,7 @@ if (!clientConfig.isCCPA && !clientConfig.isTCFV2) {
       events: tcfv2_events(amp),
     }
   };
+  if (authId) window._sp_.config.authId = authId;
   loadMessageTCFV2(clientConfig.stageCampaign);
 } else {
   console.log("run ccpa");
@@ -123,6 +127,7 @@ if (!clientConfig.isCCPA && !clientConfig.isTCFV2) {
       events: ccpa_events(amp),
     }
   };
+  if (authId) window._sp_ccpa.config.authId = authId;
   window._sp_ = window._sp_ccpa;
 }
 // end index.js
