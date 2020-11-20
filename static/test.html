@@ -110,26 +110,52 @@
           "checkConsentHref": "https://sourcepoint.mgr.consensu.org/consent/v2/amp",
           "promptUISrc": "https://amp.pm.sourcepoint.mgr.consensu.org/",
    -->
-  <body>
-    <amp-consent id='consent' layout='nodisplay' type='SourcePoint'>
-      <script type="application/json">
-        {
-          "postPromptUI": "privacy-settings-prompt",
-          "clientConfig": {
-            "accountId": 22,
-            "siteName": "amp.demo",
-            "siteId": 4400,
-            "privacyManagerId": "5d566301ab45d123ed973688",
-            "stageCampaign": true,
-            "targetingParams": {
-              "foo": "bar"
+    
+   <header>
+    <amp-consent id='consent' layout='nodisplay'>
+        <script type="application/json">
+            {
+                "consentRequired": "remote",
+                "consentInstanceId": "sourcepoint",
+                "checkConsentHref": "//localhost:3001/wrapper/tcfv2/v1/amp",
+                "promptUISrc": "//localhost:8080/",
+                "wrapperApiOrigin: "//localhost:3001/tcfv2", 
+                "postPromptUI": "consent-ui",
+                "env": "localProd",
+                "clientConfig": {
+                    "accountId": 22,
+                    "propertyHref": "http://vince.tcfv2",
+                    "propertyId": 9591,
+                    "mmsDomain": "https://cdn.privacy-mgmt.com",
+                    "privacyManagerId": 158995,
+                    "isTCFV2": true,
+                    "pmTab": "vendors",
+                    "stageCampaign": false,
+                    "pubData": {"cid":  "test"}
+                }
             }
-          }
-        }
-      </script>
-      <div id="privacy-settings-prompt">
-        <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
+        </script>
+    </amp-consent>
+  </header>
+  
+    <body>
+      <div id="consent-ui">
+          <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
       </div>
+      Ad: <div id ="ads">
+          <amp-ad type="industrybrains"
+                  width="300"
+                  height="250"
+                  data-width="300"
+                  data-height="250"
+                  data-cid="19626-3798936394"
+                  data-block-on-consent
+          >
+              <div fallback>fallback: No ad for you</div>
+          </amp-ad>
+      </div>
+      
+  </body>
     </amp-consent>
     <header>
       <nav class="wrap">
