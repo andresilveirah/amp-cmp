@@ -1,7 +1,7 @@
 // start sourcepoint_client.js
 var loggedFunction = function(name, callback) {
   return function(...args) {
-    console.log("["+name+"] arguments: "+JSON.stringify(arguments));
+    console.log(`[${name}] arguments: ${JSON.stringify(args)}`);
     callback(...args);
   };
 };
