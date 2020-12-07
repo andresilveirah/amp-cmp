@@ -6,7 +6,7 @@ function AMPClient (config, onAMPMessage) {
 AMPClient.prototype.userTriggered = function () {
   return this._config.promptTrigger === 'action';
 };
-AMPClient.prototype._postMessage = function (type, action, info) {
+AMPClient.prototype._postMessage = function (type, action, info, consentMetadata = {}) {
   console.info(`-- AMP Posting Message -- type: ${type}, action: ${action} ${info ? `, info: ${JSON.stringify(info)}` : ''}`);
   var payload = {
     type: type,
@@ -14,26 +14,26 @@ AMPClient.prototype._postMessage = function (type, action, info) {
     initialHeight: '60vh',
     border: false
   };
-  if(info !== undefined) payload.info = info;
+  if (info !== undefined) payload.info = info;
   if (action === 'accept'  || action === 'reject') {
-    payload.consentMetadata = {};
+    payload.consentMetadata = consentMetadata;
   }
   this._onAMPMessage(payload);
 };
-AMPClient.prototype._action = function (actionName, info) {
+AMPClient.prototype._action = function (actionName, info, consentMetadata) {
   var self = this;
   setTimeout(function () {
-    self._postMessage('consent-response', actionName, info);
+    self._postMessage('consent-response', actionName, info, consentMetadata);
   }, 100);
 };
 AMPClient.prototype._ui = function name(uiAction) {
   this._postMessage('consent-ui', uiAction);
 };
-AMPClient.prototype.accept = function (consentString) {
-  this._action('accept', consentString);
+AMPClient.prototype.accept = function (consentString, consentMetadata) {
+  this._action('accept', consentString, consentMetadata);
 };
-AMPClient.prototype.reject = function (consentString) {
-  this._action('reject', consentString);
+AMPClient.prototype.reject = function (consentString, consentMetadata) {
+  this._action('reject', consentString, consentMetadata);
 };
 AMPClient.prototype.dismiss = function () {
   this._action('dismiss');
