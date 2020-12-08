@@ -12,7 +12,7 @@ AMPClient.prototype._postMessage = function (type, action, info, consentMetadata
     type: type,
     action: action,
     initialHeight: '60vh',
-    border: false
+    enableBorder: false
   };
   if (info !== undefined) payload.info = info;
   if (action === 'accept'  || action === 'reject') {
