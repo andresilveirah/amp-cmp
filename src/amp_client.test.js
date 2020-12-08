@@ -2,7 +2,7 @@ import AMPClient from './amp_client'
 
 jest.useFakeTimers()
 let onAMPMessage
-const defaultPayload = { initialHeight: '60vh' }
+const defaultPayload = { initialHeight: '60vh', enableBorder: false }
 
 describe('AMPClient', () => {
   beforeEach(() => { onAMPMessage = jest.fn() });
@@ -49,7 +49,8 @@ describe('AMPClient', () => {
             ...defaultPayload,
             type: 'consent-response',
             action,
-            info: consentString
+            info: consentString,
+            consentMetadata: {},
           })
         })
       })
