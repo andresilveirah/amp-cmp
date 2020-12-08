@@ -71,9 +71,16 @@ describe('SourcePointClient', () => {
   })
 
   describe('onPrivacyManagerAction', () => {
-    it('sets ampClient.purposeConsent to whatever value consents.purposeConsent has', () => {
-      sourcepoint.onPrivacyManagerAction({ purposeConsent: "foo" })
-      expect(ampClient.purposeConsent).toBe("foo")
+    it('sets ampClient.purposeConsent to all if all is passed in', () => {
+      sourcepoint.onPrivacyManagerAction('all')
+      expect(ampClient.purposeConsent).toBe("all")
+    })
+  })
+
+  describe('onPrivacyManagerAction', () => {
+    it('sets ampClient.purposeConsent to consents if anything but all is passed in', () => {
+      sourcepoint.onPrivacyManagerAction('none')
+      expect(ampClient.purposeConsent).toBe("consents")
     })
   })
 
@@ -97,18 +104,26 @@ describe('SourcePointClient', () => {
 
   describe('onConsentReady', () => {
     describe('when amp.purposeConsent is equal to "all"', () => {
-      it('calls accept on amp client passing whatever was received as euconsent param', () => {
-        ampClient.purposeConsent = "all"
-        sourcepoint.onConsentReady(null, "foo")
-        expect(ampClient.accept).toHaveBeenCalledWith("foo")
+      it('calls accept on amp client with the proper object based on input', () => {
+        ampClient.purposeConsent = "all";
+        const _consentUUID = '12345';
+        const euconsent = '97654321.11111';
+        const addtlConsent = '1~';
+        const consentedToAll = true;
+        sourcepoint.onConsentReady(_consentUUID, euconsent, addtlConsent, consentedToAll)
+        expect(ampClient.accept).toHaveBeenCalledWith(euconsent, {addtlConsent, consentStatus: "consentedAll", consentStringType: 1, gdprApplies: true})
       })
     })
 
     describe('when amp.purposeConsent is different than "all"', () => {
-      it('calls reject on amp client passing whatever was received as euconsent param', () => {
+      it('calls reject on amp client with the proper formatted object based on input', () => {
         ampClient.purposeConsent = "foo"
-        sourcepoint.onConsentReady(null, "foo")
-        expect(ampClient.reject).toHaveBeenCalledWith("foo")
+        const _consentUUID = '12345';
+        const euconsent = '97654321.11111';
+        const addtlConsent = '1~';
+        const consentedToAll = false;
+        sourcepoint.onConsentReady(_consentUUID, euconsent, addtlConsent, consentedToAll)
+        expect(ampClient.reject).toHaveBeenCalledWith(euconsent, {addtlConsent, consentStatus: "rejectedAny", consentStringType: 1, gdprApplies: true})
       })
     })
   })
