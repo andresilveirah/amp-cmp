@@ -7,7 +7,7 @@ AMPClient.prototype.userTriggered = function () {
   return this._config.promptTrigger === 'action';
 };
 AMPClient.prototype._postMessage = function (type, action, info, consentMetadata = {}) {
-  console.info(`-- AMP Posting Message -- type: ${type}, action: ${action} ${info ? `, info: ${JSON.stringify(info)}` : ''}`);
+  console.info(`-- AMP Posting Message -- type: ${type}, action: ${action}${info ? `, info: ${JSON.stringify(info)}` : ''}${Object.is(consentMetadata, {}) ? `, consentMetaData: ${JSON.stringify(consentMetadata)}` : ''}`);
   var payload = {
     type: type,
     action: action,
@@ -21,9 +21,8 @@ AMPClient.prototype._postMessage = function (type, action, info, consentMetadata
   this._onAMPMessage(payload);
 };
 AMPClient.prototype._action = function (actionName, info, consentMetadata) {
-  var self = this;
-  setTimeout(function () {
-    self._postMessage('consent-response', actionName, info, consentMetadata);
+  setTimeout(() => {
+    this._postMessage('consent-response', actionName, info, consentMetadata);
   }, 100);
 };
 AMPClient.prototype._ui = function name(uiAction) {
