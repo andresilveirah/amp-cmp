@@ -104,7 +104,7 @@ describe('SourcePointClient', () => {
 
   describe('onConsentReady', () => {
     describe('when amp.purposeConsent is equal to "all"', () => {
-      it('calls accept on amp client with the proper object based on input', () => {
+      it('calls accept on amp client with the properly formatted object based on google spec', () => {
         ampClient.purposeConsent = "all";
         const _consentUUID = '12345';
         const euconsent = '97654321.11111';
@@ -116,7 +116,7 @@ describe('SourcePointClient', () => {
     })
 
     describe('when amp.purposeConsent is different than "all"', () => {
-      it('calls reject on amp client with the proper formatted object based on input', () => {
+      it('calls reject on amp client with the properly formatted object based on google spec', () => {
         ampClient.purposeConsent = "foo"
         const _consentUUID = '12345';
         const euconsent = '97654321.11111';
