@@ -50,7 +50,7 @@ function gdpr_events(amp) {
     onPMCancel: loggedFunction('onPMCancel', function () {
       if(amp.userTriggered()) amp.dismiss();
     }),
-    onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent) {
+    onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent, addtlConsent, consentedToAll) {
       amp.purposeConsent === ACCEPT_ALL ?
         amp.accept(euconsent) :
         amp.reject(euconsent);
@@ -136,7 +136,7 @@ function tcfv2_events(amp) {
     }),
     onMessageChoiceError: loggedFunction('onMessageChoiceError', function (error) {
       console.error(error)
-      amp.reject("");
+      amp.dismiss();
     }),
     onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function() {
       if(amp.userTriggered()) {
@@ -167,9 +167,10 @@ function tcfv2_events(amp) {
       if(amp.userTriggered()) amp.dismiss();
     }),
     onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent, addtlConsent, consentedToAll) {
+      const consentStatus = consentedToAll ? 'consentedAll' : 'rejectedAny'; 
       amp.purposeConsent === ACCEPT_ALL ?
-        amp.accept(euconsent, {consentStringType: 1, gdprApplies: true, addtlConsent: addtlConsent, consentStatus: consentedToAll}) :
-        amp.reject(euconsent, {consentStringType: 1, gdprApplies: true, addtlConsent: addtlConsent, consentStatus: !consentedToAll});
+        amp.accept(euconsent, {consentStringType: 1, gdprApplies: true, addtlConsent, consentStatus}) :
+        amp.reject(euconsent, {consentStringType: 1, gdprApplies: true, addtlConsent, consentStatus});
     })
   };
 };
