@@ -166,10 +166,10 @@ function tcfv2_events(amp) {
     onPMCancel: loggedFunction('onPMCancel', function () {
       if(amp.userTriggered()) amp.dismiss();
     }),
-    onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent) {
+    onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent, additionalConsent, consentedToAll) {
       amp.purposeConsent === ACCEPT_ALL ?
-        amp.accept({consentStringType: 'TCF V2', gdprApplies: true, additionalConsent: euconsent}) :
-        amp.reject({consentStringType: 'TCF V2', gdprApplies: true, additionalConsent: euconsent});
+        amp.accept(euconsent, {consentStringType: 1, gdprApplies: true, additionalConsent, consentStatus: consentedToAll}) :
+        amp.reject(euconsent, {consentStringType: 1, gdprApplies: true, additionalConsent, consentStatus: !consentedToAll});
     })
   };
 };
