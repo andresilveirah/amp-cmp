@@ -1,4 +1,4 @@
-import SourcePointClient from './sourcepoint_client'
+import {tcfv2_events as SourcePointClient} from './sourcepoint_client'
 import AMPClient from './amp_client'
 
 let ampClient = {}
