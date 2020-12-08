@@ -105,6 +105,7 @@ if (!clientConfig.isCCPA && !clientConfig.isTCFV2) {
       campaignEnv: clientConfig.stageCampaign ? "stage" : "prod",
       env: clientConfig.env,
       targetingParams: clientConfig.targetingParams || {},
+      promptTrigger: ampConfig.promptTrigger,
       events: tcfv2_events(amp),
     }
   };
