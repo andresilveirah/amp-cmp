@@ -6,8 +6,8 @@ function AMPClient (config, onAMPMessage) {
 AMPClient.prototype.userTriggered = function () {
   return this._config.promptTrigger === 'action';
 };
-AMPClient.prototype._postMessage = function (type, action, info, consentMetadata = {}) {
-  console.info(`-- AMP Posting Message -- type: ${type}, action: ${action}${info ? `, info: ${JSON.stringify(info)}` : ''}${Object.is(consentMetadata, {}) ? `, consentMetaData: ${JSON.stringify(consentMetadata)}` : ''}`);
+AMPClient.prototype._postMessage = function (type, action, info, consentMetadata) {
+  console.info(`-- AMP Posting Message -- type: ${type}, action: ${action}${info ? `, info: ${JSON.stringify(info)}` : ''}${consentMetadata ? `, consentMetaData: ${JSON.stringify(consentMetadata)}` : ''}`);
   var payload = {
     type: type,
     action: action,
