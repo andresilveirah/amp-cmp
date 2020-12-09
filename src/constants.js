@@ -6,7 +6,7 @@ var constants = {
   CCPA_ORIGIN: 'https://ccpa-service.sp-prod.net',
   CCPA_MMS_DOMAIN: 'https://message.sp-prod.net',
   WRAPPER_API_ORIGIN: "https://wrapper-api.sp-prod.net/tcfv2",
-  TCFV2_SCRIPT_URL: '../dist/wrapperMessagingWithoutDetection.js',
+  TCFV2_SCRIPT_URL: 'https://gdpr-tcfv2.sp-prod.net/wrapperMessagingWithoutDetection.js',
 };
 
 export default constants;
