@@ -166,7 +166,7 @@ function tcfv2_events(amp) {
     onPMCancel: loggedFunction('onPMCancel', function () {
       if(amp.userTriggered()) amp.dismiss();
     }),
-    onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent, addtlConsent, consentedToAll) {
+    onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent, {addtlConsent, consentedToAll}) {
       const consentStatus = consentedToAll ? 'consentedAll' : 'rejectedAny'; 
       amp.purposeConsent === ACCEPT_ALL ?
         amp.accept(euconsent, {consentStringType: 1, gdprApplies: true, addtlConsent, consentStatus}) :
