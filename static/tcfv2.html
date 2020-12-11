@@ -117,30 +117,28 @@
             "scriptUrl": "https://gdpr-tcfv2.sp-prod.net/wrapperMessagingWithoutDetection.js",
  -->
 <body>
-<amp-consent id='consent' layout='nodisplay'>
+<amp-consent id='consent' layout='nodisplay' type="SourcePoint">
     <!-- Sourcepoint stub function     -->
 
     <script type="application/json">
         {
             "consentRequired": "remote",
             "consentInstanceId": "sourcepoint",
-            "checkConsentHref": "https://wrapper-api.sp-prod.net/tcfv2/v1/amp",
-            "promptUISrc": "https://amp.sp-prod.net/",
-            "wrapperAPIOrigin": "https://sp-api.sp-demo.com/wrapper/tcfv2",
-            "scriptUrl": "https://gdpr-tcfv2.sp-prod.net/wrapperMessagingWithoutDetection.js",
+            "checkConsentHref": "//localhost:3000/tcfv2/v1/amp",
+            "promptUISrc": "//localhost:8080",
             "postPromptUI": "consent-ui",
             "clientConfig": {
                 "accountId": 22,
-                "propertyHref": "http://ed.sp-demo.com/test3.html",
-                "propertyId": 7131,
-                "privacyManagerId": 122015,
+                "env": "localProd",
+                "wrapperAPIOrigin": "//localhost:3000/tcfv2",
+                "propertyId": 12519,
+                "propertyHref": "http://adam.sourcepoint.com/test3.html",
+                "scriptUrl": "../dist/wrapperMessagingWithoutDetection.js",
                 "isTCFV2": true,
                 "pmTab": "vendors",
+                "privacyManagerId": 389903,
                 "stageCampaign": false,
-                "env": "prod",
-                "targetingParams": {
-                    "bucket": "rheinpfalz-1"
-                }
+                "mmsDomain": "https://cdn.privacy-mgmt.com"
             }
         }
     </script>
