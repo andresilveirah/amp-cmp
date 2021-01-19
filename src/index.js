@@ -8,6 +8,9 @@ console.debug("config from AMP: " + window.name);
 
 const urlParams = new URLSearchParams(window.location.search);
 const authId = urlParams.get('authId');
+const clientId = urlParams.get('client_id');
+const pageviewId = urlParams.get('page_view_id');
+const pageviewId64 = urlParams.get('page_view_id_64');
 
 var stagingVarsUrl = function(mmsDomain) {
   mmsDomain = mmsDomain || MMS_DOMAIN;
@@ -109,7 +112,10 @@ if (!clientConfig.isCCPA && !clientConfig.isTCFV2) {
       events: tcfv2_events(amp),
     }
   };
-  if (authId) window._sp_.config.authId = authId;
+  if (authId)       window._sp_.config.authId = authId;
+  if (clientId)     window._sp_.config.clientId = clientId;
+  if (pageviewId)   window._sp_.config.pageviewId = pageviewId;
+  if (pageviewId64) window._sp_.config.pageviewId64 = pageviewId64;
   loadMessageTCFV2(clientConfig.stageCampaign);
 } else {
   console.log("run ccpa");
@@ -128,7 +134,10 @@ if (!clientConfig.isCCPA && !clientConfig.isTCFV2) {
       events: ccpa_events(amp),
     }
   };
-  if (authId) window._sp_ccpa.config.authId = authId;
-  window._sp_ = window._sp_ccpa;
+  if (authId)       window._sp_ccpa.config.authId = authId;
+  if (clientId)     window._sp_ccpa.config.clientId = clientId;
+  if (pageviewId)   window._sp_ccpa.config.pageviewId = pageviewId;
+  if (pageviewId64) window._sp_ccpa.config.pageviewId64 = pageviewId64;
+  window._sp_ =     window._sp_ccpa;
 }
 // end index.js
