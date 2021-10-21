@@ -1,5 +1,5 @@
-import {MMS_DOMAIN, MSG_SCRIPT_URL, CMP_ORIGIN, CCPA_ORIGIN, CCPA_MMS_DOMAIN, WRAPPER_API_ORIGIN, TCFV2_SCRIPT_URL} from './constants';
-import {gdpr_events, ccpa_events, tcfv2_events} from './sourcepoint_client';
+import { MMS_DOMAIN, MSG_SCRIPT_URL, CCPA_ORIGIN, CCPA_MMS_DOMAIN, WRAPPER_API_ORIGIN } from './constants';
+import {gdpr_events, ccpa_events} from './sourcepoint_client';
 import AMPClient from './amp_client';
 
 // start index.js
@@ -12,43 +12,11 @@ const clientId = urlParams.get('client_id');
 const pageviewId = urlParams.get('page_view_id');
 const pageviewId64 = urlParams.get('page_view_id_64');
 
-var stagingVarsUrl = function(mmsDomain) {
-  mmsDomain = mmsDomain || MMS_DOMAIN;
-  return mmsDomain + "/mms/qa_set_env?env=stage";
-};
-
 var loadMessageScript = function() {
   var script = document.createElement('script');
   script.type = 'text/javascript';
   script.src = MSG_SCRIPT_URL;
   document.head.appendChild(script);
-};
-
-var loadMessageScriptTCFV2 = function() {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = window._sp_.config.scriptUrl || TCFV2_SCRIPT_URL;
-  document.head.appendChild(script);
-};
-
-var setStage = function(onReadyCallback) {
-  var request = new XMLHttpRequest();
-  request.withCredentials = true;
-  request.open("GET", stagingVarsUrl());
-  request.addEventListener("load", onReadyCallback);
-  request.send();
-};
-
-var loadMessage = function(isStageCampaign) {
-  isStageCampaign ? setStage(loadMessageScript) : loadMessageScript();
-};
-
-var loadMessageTCFV2 = function(isStageCampaign) {
-  isStageCampaign ? setStage(loadMessageScriptTCFV2) : loadMessageScriptTCFV2();
-};
-
-var siteHref = function(siteName) {
-  return "https://"+siteName;
 };
 
 var onAMPMessage = function(payload) {
@@ -75,48 +43,43 @@ if (history && history.pushState) {
 }
 
 window._sp_ccpa = window._sp_;
-if (!clientConfig.isCCPA && !clientConfig.isTCFV2) {
-  console.log("run gdpr");
+if (!clientConfig.isCCPA) {
+  const { 
+    accountId, 
+    consentLanguage, 
+    env,
+    mmsDomain, 
+    propertyHref, 
+    pmTab, 
+    privacyManagerId, 
+    stageCampaign, 
+    targetingParams,
+    wrapperAPIOrigin 
+  } = clientConfig;
+
   window._sp_ = {
     config: {
-      accountId: clientConfig.accountId,
-      siteId: clientConfig.siteId,
-      privacyManagerId: clientConfig.privacyManagerId,
-      siteHref: siteHref(clientConfig.siteName),
-      mmsDomain: clientConfig.mmsDomain || MMS_DOMAIN,
-      cmpOrigin: clientConfig.cmpOrigin  || CMP_ORIGIN,
-      waitForConsent: true,
-      targetingParams: clientConfig.targetingParams || {},
-      events: gdpr_events(amp),
-    }
-  };
-  loadMessage(clientConfig.stageCampaign);
-} else if (!clientConfig.isCCPA && clientConfig.isTCFV2) {
-  console.log("run tcfv2");
-  window._sp_ = {
-    config: {
-      accountId: clientConfig.accountId,
-      propertyId: clientConfig.propertyId,
-      propertyHref: clientConfig.propertyHref,
-      pmTab: clientConfig.pmTab,
-      isTCFV2: true,
-      scriptUrl: clientConfig.scriptUrl || TCFV2_SCRIPT_URL,
-      privacyManagerId: clientConfig.privacyManagerId,
-      consentLanguage: clientConfig.consentLanguage,
-      mmsDomain: clientConfig.mmsDomain || MMS_DOMAIN,
-      wrapperAPIOrigin: clientConfig.wrapperAPIOrigin || WRAPPER_API_ORIGIN,
-      campaignEnv: clientConfig.stageCampaign ? "stage" : "prod",
-      env: clientConfig.env,
-      targetingParams: clientConfig.targetingParams || {},
+      accountId: accountId,
+      propertyHref: propertyHref,
+      pmTab: pmTab,
+      privacyManagerId: privacyManagerId,
+      consentLanguage: consentLanguage,
+      mmsDomain: mmsDomain || MMS_DOMAIN,
+      wrapperAPIOrigin: wrapperAPIOrigin || WRAPPER_API_ORIGIN,
+      campaignEnv: stageCampaign ? "stage" : "prod",
+      env: env || "prod",
+      targetingParams: targetingParams || {},
       promptTrigger: ampConfig.promptTrigger,
-      events: tcfv2_events(amp),
+      events: gdpr_events(amp),
+      gdpr: {}
     }
   };
   if (authId)       window._sp_.config.authId = authId;
   if (clientId)     window._sp_.config.clientId = clientId;
   if (pageviewId)   window._sp_.config.pageviewId = pageviewId;
   if (pageviewId64) window._sp_.config.pageviewId64 = pageviewId64;
-  loadMessageTCFV2(clientConfig.stageCampaign);
+
+  loadMessageScript();
 } else {
   console.log("run ccpa");
   window._sp_ccpa = {

@@ -13,51 +13,6 @@ var ACCEPT_ALL = "all";
 var REJECT_ALL = "none";
 var REJECT_SOME = "some"
 
-function gdpr_events(amp) {
-  return {
-    onMessageReady: loggedFunction('onMessageReady', function() {
-      amp.show();
-    }),
-    onMessageChoiceError: loggedFunction('onMessageChoiceError', function (error) {
-      console.error(error)
-      amp.reject("");
-    }),
-    onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function() {
-      if(amp.userTriggered()) {
-        amp.show();
-      }
-    }),
-    onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (_choiceId, choiceType) {
-      switch(choiceType) {
-        case SHOW_PM_CHOICE_TYPE:
-          amp.fullscreen();
-          break;
-        case ACCEPT_ALL_CHOICE_TYPE:
-          amp.purposeConsent = ACCEPT_ALL;
-          break;
-        default:
-          amp.purposeConsent = REJECT_ALL
-      }
-    }),
-    onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (consents) {
-      // consents: {"purposeConsent":"all|some|none", "vendorConsent":"all|some|none" }
-      amp.purposeConsent = consents.purposeConsent
-    }),
-    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (consents) {
-      // consents: {"purposeConsent":"all|some|none", "vendorConsent":"all|some|none" }
-      amp.purposeConsent = consents.purposeConsent
-    }),
-    onPMCancel: loggedFunction('onPMCancel', function () {
-      if(amp.userTriggered()) amp.dismiss();
-    }),
-    onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent, addtlConsent, consentedToAll) {
-      amp.purposeConsent === ACCEPT_ALL ?
-        amp.accept(euconsent) :
-        amp.reject(euconsent);
-    })
-  };
-};
-
 function ccpa_events(amp) {
   // consent string(uspString):
   // version|explicit_notice_shown|user_optout_of_sale
@@ -129,50 +84,62 @@ function ccpa_events(amp) {
   };
 };
 
-function tcfv2_events(amp) {
+function gdpr_events(amp) {
   return {
-    onMessageReady: loggedFunction('onMessageReady', function() {
-      amp.show();
+    onMessageReady: loggedFunction('onMessageReady', function(category) {
+      if (category === "gdpr") {
+        amp.show();
+      }
     }),
-    onMessageChoiceError: loggedFunction('onMessageChoiceError', function (error) {
-      console.error(error)
-      amp.dismiss();
+    onMessageChoiceError: loggedFunction('onMessageChoiceError', function (category, error) {
+      if (category === "gdpr") {
+        console.error(error)
+        amp.dismiss();
+      }
     }),
     onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function() {
       if(amp.userTriggered()) {
         amp.show();
       }
     }),
-    onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (_choiceId, choiceType) {
-      switch(choiceType) {
-        case SHOW_PM_CHOICE_TYPE:
-          amp.fullscreen();
-          break;
-        case ACCEPT_ALL_CHOICE_TYPE:
-          amp.purposeConsent = ACCEPT_ALL;
-          break;
-        default:
-          amp.purposeConsent = REJECT_ALL
+    onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (category, _choiceId, choiceType) {
+      if (category === "gdpr") {
+        switch(choiceType) {
+          case SHOW_PM_CHOICE_TYPE:
+            amp.fullscreen();
+            break;
+          case ACCEPT_ALL_CHOICE_TYPE:
+            amp.purposeConsent = ACCEPT_ALL;
+            break;
+          default:
+            amp.purposeConsent = REJECT_ALL
+        }
       }
     }),
-    onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (consents) {
-      // consents: { "all|some|none" }
-      amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
+    onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (category, consents) {
+      if (category === "gdpr") {
+        amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
+      }
     }),
-    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (consents) {
-      // consents: { "all|some|none" }
-      amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
+    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (category, consents) {
+      if (category === "gdpr") {
+        amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
+      }
     }),
-    onPMCancel: loggedFunction('onPMCancel', function () {
-      if(amp.userTriggered()) amp.dismiss();
+    onPMCancel: loggedFunction('onPMCancel', function (category) {
+      if (category === "gdpr") {
+        if(amp.userTriggered()) amp.dismiss();
+      }
     }),
-    onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent, {addtlConsent, consentedToAll}) {
-      consentedToAll ?
-        amp.accept(euconsent, {consentStringType: 1, gdprApplies: true, additionalConsent: addtlConsent, consentStatus: 'consentedAll'}) :
-        amp.reject(euconsent, {consentStringType: 1, gdprApplies: true, additionalConsent: addtlConsent, consentStatus: 'rejectedAny'});
+    onConsentReady:  loggedFunction('onConsentReady', function (category, _consentUUID, euconsent, {addtlConsent, consentedToAll}) {
+      if (category === "gdpr") {
+        consentedToAll ?
+          amp.accept(euconsent, {consentStringType: 1, gdprApplies: true, additionalConsent: addtlConsent, consentStatus: 'consentedAll'}) :
+          amp.reject(euconsent, {consentStringType: 1, gdprApplies: true, additionalConsent: addtlConsent, consentStatus: 'rejectedAny'});
+      }
     })
   };
 };
 
-export { gdpr_events, ccpa_events, tcfv2_events }
+export { gdpr_events, ccpa_events }
 // end sourcepoint_client.js
