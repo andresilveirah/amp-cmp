@@ -12,7 +12,10 @@ const clientId = urlParams.get('client_id');
 const pageviewId = urlParams.get('page_view_id');
 const pageviewId64 = urlParams.get('page_view_id_64');
 
-var loadMessageScript = function() {
+var loadMessageScript = function(callback) {
+  window._sp_queue = window._sp_queue || []
+  _sp_queue.push(callback);
+
   var script = document.createElement('script');
   script.type = 'text/javascript';
   script.src = MSG_SCRIPT_URL;
@@ -27,18 +30,17 @@ var amp = new AMPClient(ampConfig, onAMPMessage);
 var clientConfig = ampConfig.clientConfig;
 
 // set query params for triggering the message or the PM directly
+let showPM = false;
+let runMessaging = false;
+
+if (amp.userTriggered() && ( clientConfig.privacyManagerId && (clientConfig.privacyManagerId.length > 0 || clientConfig.privacyManagerId > 0) )) showPM = true;
+if (!amp.userTriggered() || !clientConfig.privacyManagerId || clientConfig.privacyManagerId.length == 0) runMessaging = true;
+
 if (history && history.pushState) {
-  let showPM = false;
-  let runMessaging = false;
-
-  if (amp.userTriggered() && ( clientConfig.privacyManagerId && (clientConfig.privacyManagerId.length > 0 || clientConfig.privacyManagerId > 0) )) showPM = true;
-  if (!amp.userTriggered() || !clientConfig.privacyManagerId || clientConfig.privacyManagerId.length == 0) runMessaging = true;
-
   var newurl = location.protocol + "//" + location.host + location.pathname
     + '?_sp_showPM='+showPM
     + '&_sp_runMessaging='+runMessaging
-    + '&isCCPA='+(clientConfig.isCCPA || false)
-    + '&isTCFV2='+(clientConfig.isTCFV2 || false);
+    + '&isCCPA='+(clientConfig.isCCPA || false);
   history.pushState({ path: newurl }, '', newurl);
 }
 
@@ -61,8 +63,6 @@ if (!clientConfig.isCCPA) {
     config: {
       accountId: accountId,
       propertyHref: propertyHref,
-      pmTab: pmTab,
-      privacyManagerId: privacyManagerId,
       consentLanguage: consentLanguage,
       mmsDomain: mmsDomain || MMS_DOMAIN,
       wrapperAPIOrigin: wrapperAPIOrigin || WRAPPER_API_ORIGIN,
@@ -70,6 +70,7 @@ if (!clientConfig.isCCPA) {
       env: env || "prod",
       targetingParams: targetingParams || {},
       promptTrigger: ampConfig.promptTrigger,
+      runMessaging: !!showPM,
       events: gdpr_events(amp),
       gdpr: {
         includeTcfApi: false
@@ -81,7 +82,12 @@ if (!clientConfig.isCCPA) {
   if (pageviewId)   window._sp_.config.pageviewId = pageviewId;
   if (pageviewId64) window._sp_.config.pageviewId64 = pageviewId64;
 
-  loadMessageScript();
+  loadMessageScript((_sp_) => {
+    if (showPM) {
+      _sp_.gdpr.loadPrivacyManagerModal(privacyManagerId, pmTab)
+        .then(() => { amp.show() })
+    }
+  });
 } else {
   console.log("run ccpa");
   window._sp_ccpa = {

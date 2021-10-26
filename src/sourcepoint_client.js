@@ -97,11 +97,6 @@ function gdpr_events(amp) {
         amp.dismiss();
       }
     }),
-    onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function() {
-      if(amp.userTriggered()) {
-        amp.show();
-      }
-    }),
     onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (category, _choiceId, choiceType) {
       if (category === "gdpr") {
         switch(choiceType) {
