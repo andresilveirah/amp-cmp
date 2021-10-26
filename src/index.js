@@ -71,7 +71,9 @@ if (!clientConfig.isCCPA) {
       targetingParams: targetingParams || {},
       promptTrigger: ampConfig.promptTrigger,
       events: gdpr_events(amp),
-      gdpr: {}
+      gdpr: {
+        includeTcfApi: false
+      }
     }
   };
   if (authId)       window._sp_.config.authId = authId;
