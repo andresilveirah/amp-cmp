@@ -70,7 +70,7 @@ if (!clientConfig.isCCPA) {
       env: env || "prod",
       targetingParams: targetingParams || {},
       promptTrigger: ampConfig.promptTrigger,
-      runMessaging: !!showPM,
+      runMessaging: !showPM,
       events: gdpr_events(amp),
       gdpr: {
         includeTcfApi: false
