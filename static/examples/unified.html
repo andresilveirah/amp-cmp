@@ -8,6 +8,7 @@
     <script async custom-element="amp-consent" src="https://cdn.ampproject.org/v0/amp-consent-0.1.js"></script>
     <script async custom-element="amp-sticky-ad" src="https://cdn.ampproject.org/v0/amp-sticky-ad-1.0.js"></script>
     <script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>
+    <script async custom-element="amp-geo" src="https://cdn.ampproject.org/v0/amp-geo-0.1.js"></script>
     <link rel="canonical" href="./index.html">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
     <meta name="amp-consent-blocking" content>
@@ -101,26 +102,56 @@
     </style>
 </head>
 <body>
+    <amp-geo layout="nodisplay">
+        <script type="application/json">
+            {
+                "ISOCountryGroups": {
+                    "eea": ["preset-eea", "unknown"],
+                    "us": ["us"]
+                }
+            }
+        </script>
+    </amp-geo>
+
     <amp-consent id='consent' layout='nodisplay' type="SourcePoint">
         <!-- Sourcepoint stub function     -->
 
         <script type="application/json">
             {
-                "consentRequired": "remote",
+                "consentRequired": "false",
                 "consentInstanceId": "sourcepoint",
-                "checkConsentHref": "//localhost:3000/tcfv2/v1/amp",
                 "promptUISrc": "//localhost:8080/index.html?authId=CLIENT_ID",
                 "postPromptUI": "consent-ui",
                 "clientConfig": {
                     "accountId": 22,
                     "env": "localProd",
                     "wrapperAPIOrigin": "//localhost:3000/wrapper",
-                    "propertyId": 12519,
-                    "propertyHref": "http://adam.sourcepoint.com/test3.html",
-                    "pmTab": "vendors",
-                    "privacyManagerId": 389903,
-                    "stageCampaign": false,
-                    "mmsDomain": "https://cdn.privacy-mgmt.com"
+                    "propertyHref": "https://tests.unified-script.com",
+                    "stageCampaign": false
+                },
+                "geoOverride": {
+                    "eea": {
+                        "consentRequired": "remote",
+                        "checkConsentHref": "//localhost:3000/tcfv2/v1/amp-v2?authId=CLIENT_ID",
+                        "clientConfig": {
+                            "pmTab": "purposes",
+                            "privacyManagerId": 521350
+                        }
+                    },
+                    "us": {
+                        "consentRequired": "remote",
+                        "checkConsentHref": "https://ccpa-service.sp-prod.net/ccpa/consent/amp",
+                        "clientConfig": {
+                            "isCCPA": true,
+                            "siteId": 14895,
+                            "propertyHref": "https://tests-ccpa.dan.sourcepoint.com",
+                            "privacyManagerId": "5e8f4d1c0d337d2559996eed",
+                            "isCCPA": true,
+                            "getDnsMsgMms": true,
+                            "alwaysDisplayDns": false,
+                            "showNoticeUntilAction": true
+                        }
+                    }
                 }
             }
         </script>
@@ -138,7 +169,7 @@
     </header>
 
     <div id="consent-ui">
-        <button on="tap:consent.prompt(consent=SourcePoint)">PM***</button>
+        <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
     </div>
     <ul id="ads-container">
         <li class="ad-item">

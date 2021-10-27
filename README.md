@@ -15,3 +15,10 @@ npm run ui
 ```
 
 3. On your browser, visit `http://localhost/test.html`
+
+
+Helpful Hints:
+
+Turn on the "experimental channel" here - https://cdn.ampproject.org/experiments.html
+
+And it will enable amp-geo spoofing using #amp-geo={{ country code }}

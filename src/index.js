@@ -90,6 +90,10 @@ if (!clientConfig.isCCPA) {
   });
 } else {
   console.log("run ccpa");
+  if (!clientConfig.propertyHref && clientConfig.siteHref) {
+    clientConfig.propertyHref = clientConfig.siteHref
+  }
+
   window._sp_ccpa = {
     config: {
       mmsDomain: clientConfig.mmsDomain || CCPA_MMS_DOMAIN,
@@ -99,7 +103,7 @@ if (!clientConfig.isCCPA) {
       alwaysDisplayDns: clientConfig.alwaysDisplayDns,
       isCCPA: true,
       siteId: clientConfig.siteId,
-      siteHref: clientConfig.siteHref,
+      siteHref: clientConfig.propertyHref,
       targetingParams: clientConfig.targetingParams || {},
       privacyManagerId: clientConfig.privacyManagerId,
       events: ccpa_events(amp),
