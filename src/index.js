@@ -1,4 +1,4 @@
-import { MMS_DOMAIN, MSG_SCRIPT_URL, CCPA_ORIGIN, CCPA_MMS_DOMAIN, WRAPPER_API_ORIGIN } from './constants';
+import { MMS_DOMAIN, MSG_SCRIPT_URL, MSG_SCRIPT_URL_CCPA, CCPA_ORIGIN, CCPA_MMS_DOMAIN, WRAPPER_API_ORIGIN } from './constants';
 import {gdpr_events, ccpa_events} from './sourcepoint_client';
 import AMPClient from './amp_client';
 
@@ -21,6 +21,13 @@ var loadMessageScript = function(callback) {
   script.src = MSG_SCRIPT_URL;
   document.head.appendChild(script);
 };
+
+var loadMessageScriptCcpa = function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = MSG_SCRIPT_URL_CCPA;
+  document.head.appendChild(script);
+}
 
 var onAMPMessage = function(payload) {
   window.parent.postMessage(payload, '*')
@@ -114,5 +121,7 @@ if (!clientConfig.isCCPA) {
   if (pageviewId)   window._sp_ccpa.config.pageviewId = pageviewId;
   if (pageviewId64) window._sp_ccpa.config.pageviewId64 = pageviewId64;
   window._sp_ =     window._sp_ccpa;
+
+  loadMessageScriptCcpa();
 }
 // end index.js
