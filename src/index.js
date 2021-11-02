@@ -66,6 +66,13 @@ if (!clientConfig.isCCPA) {
     wrapperAPIOrigin 
   } = clientConfig;
 
+  let {
+    campaignEnv
+  } = clientConfig;
+
+  // prefer new config type, support legacy
+  campaignEnv = campaignEnv || (stageCampaign ? "stage" : "prod")
+
   window._sp_ = {
     config: {
       accountId: accountId,
@@ -73,7 +80,7 @@ if (!clientConfig.isCCPA) {
       consentLanguage: consentLanguage,
       mmsDomain: mmsDomain || MMS_DOMAIN,
       wrapperAPIOrigin: wrapperAPIOrigin || WRAPPER_API_ORIGIN,
-      campaignEnv: stageCampaign ? "stage" : "prod",
+      campaignEnv,
       env: env || "prod",
       targetingParams: targetingParams || {},
       promptTrigger: ampConfig.promptTrigger,
