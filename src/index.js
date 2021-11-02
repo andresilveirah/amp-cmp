@@ -92,7 +92,6 @@ if (!clientConfig.isCCPA) {
   loadMessageScript((_sp_) => {
     if (showPM) {
       _sp_.gdpr.loadPrivacyManagerModal(privacyManagerId, pmTab)
-        .then(() => { amp.show() })
     }
   });
 } else {
