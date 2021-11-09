@@ -43,7 +43,7 @@ describe('AMPClient', () => {
         it('calls onAMPMessage with the correct payload', () => {
           const amp = new AMPClient({}, onAMPMessage)
           const consentString = 'a consent string'
-          amp[action](consentString)
+          amp[action](consentString, {})
           jest.runAllTimers()
           expect(onAMPMessage).toHaveBeenCalledWith({
             ...defaultPayload,
