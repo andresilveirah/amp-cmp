@@ -1,4 +1,4 @@
-import { MMS_DOMAIN, MSG_SCRIPT_URL, MSG_SCRIPT_URL_CCPA, CCPA_ORIGIN, CCPA_MMS_DOMAIN, BASE_ENDPOINT } from './constants';
+import { MSG_SCRIPT_URL, BASE_ENDPOINT } from './constants';
 import {gdpr_events, ccpa_events} from './sourcepoint_client';
 import AMPClient from './amp_client';
 
@@ -21,13 +21,6 @@ var loadMessageScript = function(callback) {
   script.src = MSG_SCRIPT_URL;
   document.head.appendChild(script);
 };
-
-var loadMessageScriptCcpa = function () {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = MSG_SCRIPT_URL_CCPA;
-  document.head.appendChild(script);
-}
 
 var onAMPMessage = function(payload) {
   window.parent.postMessage(payload, '*')
@@ -83,7 +76,6 @@ const spConfig = {
   baseEndpoint: baseEndpoint || BASE_ENDPOINT,
   propertyHref: propertyHref,
   consentLanguage: consentLanguage,
-  mmsDomain: mmsDomain || MMS_DOMAIN,
   campaignEnv,
   env: env || "prod",
   targetingParams: targetingParams || {},
@@ -95,7 +87,8 @@ if (authId)       spConfig.authId = authId;
 if (clientId)     spConfig.clientId = clientId;
 if (pageviewId)   spConfig.pageviewId = pageviewId;
 if (pageviewId64) spConfig.pageviewId64 = pageviewId64;
-if (wrapperAPIOrigin) spConfig.wrapperAPIOrigin = wrapperAPIOrigin
+if (wrapperAPIOrigin) spConfig.wrapperAPIOrigin = wrapperAPIOrigin;
+if (mmsDomain) spConfig.mmsDomain = mmsDomain
 
 if (clientConfig.isCCPA) {
   spConfig.ccpa = {}
