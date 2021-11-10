@@ -92,7 +92,7 @@ describe('SourcePointClient', () => {
         const euconsent = '97654321.11111';
         const addtlConsent = '1~';
         const consentedToAll = true;
-        sourcepoint.onConsentReady("gdpr", _consentUUID, euconsent, addtlConsent, consentedToAll)
+        sourcepoint.onConsentReady("gdpr", _consentUUID, euconsent, {addtlConsent, consentedToAll})
         expect(ampClient.accept).toHaveBeenCalledWith(euconsent, {additionalConsent: addtlConsent, consentStatus: "consentedAll", consentStringType: 1, gdprApplies: true})
       })
     })
@@ -104,7 +104,7 @@ describe('SourcePointClient', () => {
         const euconsent = '97654321.11111';
         const addtlConsent = '1~';
         const consentedToAll = false;
-        sourcepoint.onConsentReady("gdpr", _consentUUID, euconsent, addtlConsent, consentedToAll)
+        sourcepoint.onConsentReady("gdpr", _consentUUID, euconsent, {addtlConsent, consentedToAll})
         expect(ampClient.reject).toHaveBeenCalledWith(euconsent, {additionalConsent: addtlConsent, consentStatus: "rejectedAny", consentStringType: 1, gdprApplies: true})
       })
     })
