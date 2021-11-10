@@ -43,6 +43,7 @@ let runMessaging = false;
 if (amp.userTriggered() && ( clientConfig.privacyManagerId && (clientConfig.privacyManagerId.length > 0 || clientConfig.privacyManagerId > 0) )) showPM = true;
 if (!amp.userTriggered() || !clientConfig.privacyManagerId || clientConfig.privacyManagerId.length == 0) runMessaging = true;
 
+// TODO - I think we can remove these
 if (history && history.pushState) {
   var newurl = location.protocol + "//" + location.host + location.pathname
     + '?_sp_showPM='+showPM
@@ -51,85 +52,73 @@ if (history && history.pushState) {
   history.pushState({ path: newurl }, '', newurl);
 }
 
-window._sp_ccpa = window._sp_;
-if (!clientConfig.isCCPA) {
-  const { 
-    accountId, 
-    baseEndpoint,
-    consentLanguage, 
-    env,
-    mmsDomain, 
-    propertyHref, 
-    pmTab, 
-    privacyManagerId, 
-    stageCampaign, 
-    targetingParams,
-    wrapperAPIOrigin 
-  } = clientConfig;
+const { 
+  accountId, 
+  baseEndpoint,
+  consentLanguage, 
+  env,
+  mmsDomain,  
+  pmTab, 
+  privacyManagerId, 
+  stageCampaign, 
+  targetingParams,
+  wrapperAPIOrigin 
+} = clientConfig;
 
-  let {
-    campaignEnv
-  } = clientConfig;
+let {
+  campaignEnv,
+  propertyHref
+} = clientConfig;
 
-  // prefer new config type, support legacy
-  campaignEnv = campaignEnv || (stageCampaign ? "stage" : "prod")
+// prefer new config type, support legacy
+campaignEnv = campaignEnv || (stageCampaign ? "stage" : "prod")
+if (!propertyHref && clientConfig.siteHref) {
+  propertyHref = clientConfig.siteHref
+}
+// TODO - create baseEndpoint from old configs? or use existing ones as overrides?
 
-  window._sp_ = {
-    config: {
-      accountId: accountId,
-      baseEndpoint: baseEndpoint || BASE_ENDPOINT,
-      propertyHref: propertyHref,
-      consentLanguage: consentLanguage,
-      mmsDomain: mmsDomain || MMS_DOMAIN,
-      campaignEnv,
-      env: env || "prod",
-      targetingParams: targetingParams || {},
-      promptTrigger: ampConfig.promptTrigger,
-      runMessaging: !showPM,
-      events: gdpr_events(amp),
-      gdpr: {
-        includeTcfApi: false
-      }
-    }
-  };
-  if (authId)       window._sp_.config.authId = authId;
-  if (clientId)     window._sp_.config.clientId = clientId;
-  if (pageviewId)   window._sp_.config.pageviewId = pageviewId;
-  if (pageviewId64) window._sp_.config.pageviewId64 = pageviewId64;
-  if (wrapperAPIOrigin) window._sp_.config.wrapperAPIOrigin = wrapperAPIOrigin
+// create config
+const spConfig = {
+  accountId: accountId,
+  baseEndpoint: baseEndpoint || BASE_ENDPOINT,
+  propertyHref: propertyHref,
+  consentLanguage: consentLanguage,
+  mmsDomain: mmsDomain || MMS_DOMAIN,
+  campaignEnv,
+  env: env || "prod",
+  targetingParams: targetingParams || {},
+  promptTrigger: ampConfig.promptTrigger,
+  runMessaging: !showPM
+}
 
-  loadMessageScript((_sp_) => {
-    if (showPM) {
+if (authId)       spConfig.authId = authId;
+if (clientId)     spConfig.clientId = clientId;
+if (pageviewId)   spConfig.pageviewId = pageviewId;
+if (pageviewId64) spConfig.pageviewId64 = pageviewId64;
+if (wrapperAPIOrigin) spConfig.wrapperAPIOrigin = wrapperAPIOrigin
+
+if (clientConfig.isCCPA) {
+  spConfig.ccpa = {}
+  spConfig.events = ccpa_events(amp)
+} else {
+  spConfig.gdpr = {
+    includeTcfApi: false
+  }
+  spConfig.events = gdpr_events(amp)
+}
+
+window._sp_ = {
+  config: spConfig
+};
+
+loadMessageScript((_sp_) => {
+  if (showPM) {
+    if (clientConfig.isCCPA) {
+      _sp_.ccpa.loadPrivacyManagerModal(privacyManagerId, pmTab)
+    } else {
       _sp_.gdpr.loadPrivacyManagerModal(privacyManagerId, pmTab)
     }
-  });
-} else {
-  console.log("run ccpa");
-  if (!clientConfig.propertyHref && clientConfig.siteHref) {
-    clientConfig.propertyHref = clientConfig.siteHref
   }
+});
 
-  window._sp_ccpa = {
-    config: {
-      mmsDomain: clientConfig.mmsDomain || CCPA_MMS_DOMAIN,
-      ccpaOrigin: clientConfig.ccpaOrigin || CCPA_ORIGIN,
-      accountId: clientConfig.accountId,
-      getDnsMsgMms: clientConfig.getDnsMsgMms,
-      alwaysDisplayDns: clientConfig.alwaysDisplayDns,
-      isCCPA: true,
-      siteId: clientConfig.siteId,
-      siteHref: clientConfig.propertyHref,
-      targetingParams: clientConfig.targetingParams || {},
-      privacyManagerId: clientConfig.privacyManagerId,
-      events: ccpa_events(amp),
-    }
-  };
-  if (authId)       window._sp_ccpa.config.authId = authId;
-  if (clientId)     window._sp_ccpa.config.clientId = clientId;
-  if (pageviewId)   window._sp_ccpa.config.pageviewId = pageviewId;
-  if (pageviewId64) window._sp_ccpa.config.pageviewId64 = pageviewId64;
-  window._sp_ =     window._sp_ccpa;
-
-  loadMessageScriptCcpa();
-}
 // end index.js

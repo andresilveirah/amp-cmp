@@ -17,70 +17,87 @@ function ccpa_events(amp) {
   // consent string(uspString):
   // version|explicit_notice_shown|user_optout_of_sale
   return {
-    onMessageReady: function () {
-      amp.show();
-    },
-    onMessageChoiceSelect: function (choice_id, choiceType) {
-      switch(choiceType) {
-        case SHOW_PM_CHOICE_TYPE:
-          amp.fullscreen();
-          break;
-        case ACCEPT_ALL_CHOICE_TYPE:
-          amp.purposeConsent = ACCEPT_ALL;
-          amp.accept('1YN-'); // The user has not opted out of the sale. Explicit notice shown.
-          break;
-        case REJECT_ALL_CHOICE_TYPE:
-          amp.purposeConsent = REJECT_ALL;
-          amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
-          break;
-        default:
-          break;
+    onMessageReady: loggedFunction('onMessageReady', function (category) {
+      if (category === "ccpa") {
+        amp.show();
+      }
+    }),
+    onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (category, choice_id, choiceType) {
+      if (category === "ccpa") {
+        switch(choiceType) {
+          case SHOW_PM_CHOICE_TYPE:
+            amp.fullscreen();
+            break;
+          case ACCEPT_ALL_CHOICE_TYPE:
+            amp.purposeConsent = ACCEPT_ALL;
+            amp.accept('1YN-'); // The user has not opted out of the sale. Explicit notice shown.
+            break;
+          case REJECT_ALL_CHOICE_TYPE:
+            amp.purposeConsent = REJECT_ALL;
+            amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
+            break;
+          default:
+            break;
 
+        }
       }
-    },
-    onPrivacyManagerAction: function (pmData) {
-      amp.purposeConsent = pmData.purposeConsent;
-    },
-    onPrivacyManagerActionStatus: function (pmData) {
-      amp.purposeConsent = pmData.purposeConsent;
-    },
-    onMessageChoiceError: function (err) {
-      amp.dismiss();
-    },
-    onConsentReady: function (consentUUID, euconsent) {
-      switch( amp.purposeConsent ) {
-        case ACCEPT_ALL:
-          amp.accept('1YN-'); // The user has not opted out of the sale. Explicit notice shown.
-          break;
-        case REJECT_ALL:
-          amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
-          break;
-        case REJECT_SOME:
-          amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
-          break;
-        default:
-          amp.dismiss();
-          break;
+    }),
+    onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (category, pmData) {
+      // TODO - pmData is not coming through with the new PM
+      if (category === "ccpa") {
+        amp.purposeConsent = pmData.purposeConsent;
       }
-    },
-    onPMCancel: function () {
-      if(amp.userTriggered()) {
+    }),
+    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (category, pmData) {
+      // TODO - pmData is not coming through with the new PM
+      if (category === "ccpa") {
+        amp.purposeConsent = pmData.purposeConsent;
+      }
+    }),
+    onMessageChoiceError: loggedFunction('onMessageChoiceError', function (category, err) {
+      if (category === "ccpa") {
         amp.dismiss();
       }
-    },
-    onMessageReceiveData: function (data) {
-      if (data.msg_id==0) { // targeting doesnt apply for messaging to be shown
-        amp.accept('1NN-'); // The user has not opted out of the sale. No explicit notice shown.
+    }),
+    // TODO - onConsentReady happens twice for ccpa if there is a message, we only want to handle the second one
+    onConsentReady: loggedFunction('onConsentReady', function (category, consentUUID, euconsent) {
+      if (category === "ccpa") {
+        switch( amp.purposeConsent ) {
+          case ACCEPT_ALL:
+            amp.accept('1YN-'); // The user has not opted out of the sale. Explicit notice shown.
+            break;
+          case REJECT_ALL:
+            amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
+            break;
+          case REJECT_SOME:
+            amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
+            break;
+        }
       }
+    }),
+    onPMCancel: loggedFunction('onPMCancel', function (category) {
+      if (category === "ccpa") {
+        if(amp.userTriggered()) {
+          amp.dismiss();
+        }
+      }
+    }),
+    onMessageReceiveData: loggedFunction('onMessageReceiveData', function (category, data) {
+      if (category === "ccpa") {
+        // TODO - is this logic below correct? We should just use what we get from wrapper probably
+        if (data.msg_id==0) { // targeting doesnt apply for messaging to be shown
+          amp.accept('1NN-'); // The user has not opted out of the sale. No explicit notice shown.
+        }
+        if(amp.userTriggered()) {
+          amp.show();
+        }
+      }
+    }),
+    onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function () {
       if(amp.userTriggered()) {
         amp.show();
       }
-    },
-    onSPPMObjectReady: function () {
-      if(amp.userTriggered()) {
-        amp.show();
-      }
-    }
+    })
   };
 };
 
