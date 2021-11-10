@@ -1,4 +1,4 @@
-import { MMS_DOMAIN, MSG_SCRIPT_URL, MSG_SCRIPT_URL_CCPA, CCPA_ORIGIN, CCPA_MMS_DOMAIN, WRAPPER_API_ORIGIN } from './constants';
+import { MMS_DOMAIN, MSG_SCRIPT_URL, MSG_SCRIPT_URL_CCPA, CCPA_ORIGIN, CCPA_MMS_DOMAIN, BASE_ENDPOINT } from './constants';
 import {gdpr_events, ccpa_events} from './sourcepoint_client';
 import AMPClient from './amp_client';
 
@@ -55,6 +55,7 @@ window._sp_ccpa = window._sp_;
 if (!clientConfig.isCCPA) {
   const { 
     accountId, 
+    baseEndpoint,
     consentLanguage, 
     env,
     mmsDomain, 
@@ -76,10 +77,10 @@ if (!clientConfig.isCCPA) {
   window._sp_ = {
     config: {
       accountId: accountId,
+      baseEndpoint: baseEndpoint || BASE_ENDPOINT,
       propertyHref: propertyHref,
       consentLanguage: consentLanguage,
       mmsDomain: mmsDomain || MMS_DOMAIN,
-      wrapperAPIOrigin: wrapperAPIOrigin || WRAPPER_API_ORIGIN,
       campaignEnv,
       env: env || "prod",
       targetingParams: targetingParams || {},
@@ -95,6 +96,7 @@ if (!clientConfig.isCCPA) {
   if (clientId)     window._sp_.config.clientId = clientId;
   if (pageviewId)   window._sp_.config.pageviewId = pageviewId;
   if (pageviewId64) window._sp_.config.pageviewId64 = pageviewId64;
+  if (wrapperAPIOrigin) window._sp_.config.wrapperAPIOrigin = wrapperAPIOrigin
 
   loadMessageScript((_sp_) => {
     if (showPM) {
