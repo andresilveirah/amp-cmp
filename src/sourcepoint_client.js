@@ -43,15 +43,13 @@ function ccpa_events(amp) {
       }
     }),
     onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (category, pmData) {
-      // TODO - pmData is not coming through with the new PM
       if (category === "ccpa") {
         amp.purposeConsent = pmData.purposeConsent;
       }
     }),
-    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (category, pmData) {
-      // TODO - pmData is not coming through with the new PM
+    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (category, consentStatus) {
       if (category === "ccpa") {
-        amp.purposeConsent = pmData.purposeConsent;
+        amp.purposeConsent = consentStatus;
       }
     }),
     onMessageChoiceError: loggedFunction('onMessageChoiceError', function (category, err) {
@@ -60,17 +58,17 @@ function ccpa_events(amp) {
       }
     }),
     // TODO - onConsentReady happens twice for ccpa if there is a message, we only want to handle the second one
-    onConsentReady: loggedFunction('onConsentReady', function (category, consentUUID, euconsent) {
+    onConsentReady: loggedFunction('onConsentReady', function (category, uuid, uspString) {
       if (category === "ccpa") {
         switch( amp.purposeConsent ) {
           case ACCEPT_ALL:
-            amp.accept('1YN-'); // The user has not opted out of the sale. Explicit notice shown.
+            amp.accept(uspString); // The user has not opted out of the sale. Explicit notice shown.
             break;
           case REJECT_ALL:
-            amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
+            amp.reject(uspString); // The user has opted out of their data being used for the sale. Explicit notice shown.
             break;
           case REJECT_SOME:
-            amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
+            amp.reject(uspString); // The user has opted out of their data being used for the sale. Explicit notice shown.
             break;
         }
       }
@@ -120,19 +118,21 @@ function gdpr_events(amp) {
           case SHOW_PM_CHOICE_TYPE:
             amp.fullscreen();
             break;
-          case ACCEPT_ALL_CHOICE_TYPE:
+          case ACCEPT_ALL_CHOICE_TYPE: // TODO - is this needed? - amp.purposeConsent does not seem to be used
             amp.purposeConsent = ACCEPT_ALL;
             break;
-          default:
+          default: // TODO - is this needed? - amp.purposeConsent does not seem to be used
             amp.purposeConsent = REJECT_ALL
         }
       }
     }),
+    // TODO - is this needed? - amp.purposeConsent does not seem to be used
     onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (category, consents) {
       if (category === "gdpr") {
         amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
       }
     }),
+    // TODO - is this needed? - amp.purposeConsent does not seem to be used
     onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (category, consents) {
       if (category === "gdpr") {
         amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
