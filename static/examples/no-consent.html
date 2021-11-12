@@ -78,7 +78,7 @@
             float: left;
             padding: 0 50px;
         }
-        #ads-container {
+        #ads-container, #post-article-ads {
             max-width: 800px;
             height: 250px;
             margin: 0 auto;
@@ -95,6 +95,10 @@
             content: "";
             clear: both;
             display: table;
+        }
+        #consent-ui {
+            padding: 15px;
+            text-align: center;
         }
     </style>
 </head>
@@ -118,29 +122,17 @@
                     height="250"
                     data-width="300"
                     data-height="250"
-                    data-cid="19626-3798936394">
+                    data-cid="19626-3798936394"
+            >
 
                 <div fallback>No ad for you</div>
             </amp-ad>
-
-        </li>
-        <li class="ad-item">
-            <amp-embed width=100 height=100
-                    type=taboola
-                    layout=responsive
-                    heights="(min-width:780px) 64%, (min-width:480px) 98%, (min-width:460px) 167%, 196%"
-                    data-publisher="amp-demo"
-                    data-mode="thumbnails-a"
-                    data-placement="Responsive example - AMP"
-                    data-article="auto">
-            </amp-embed>
         </li>
     </ul>
     <div class="clear"></div>
     <article id="primary">
-        <h1>AMP Project</h1>
+        <h1>AMP Article</h1>
         <section>
-            test
             <amp-img
                     layout="responsive"
                     width="1390"
@@ -148,8 +140,37 @@
                     alt="SourcePoint CMP"
                     src="https://46c4ruxjs5w5sbas2hnua710-wpengine.netdna-ssl.com/wp-content/uploads/amp-logo.png">
             </amp-img>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Placerat vestibulum lectus mauris ultrices eros in cursus. Orci dapibus ultrices in iaculis nunc sed augue. Quis risus sed vulputate odio ut. Morbi enim nunc faucibus a pellentesque sit amet porttitor. Tellus mauris a diam maecenas. Pretium lectus quam id leo in vitae turpis. Sed id semper risus in hendrerit gravida rutrum. Sed enim ut sem viverra aliquet eget. Adipiscing elit duis tristique sollicitudin nibh sit amet. Massa ultricies mi quis hendrerit dolor magna. Commodo ullamcorper a lacus vestibulum sed arcu. Aliquet sagittis id consectetur purus ut faucibus.
+            </p>
+            <p>
+                Consequat id porta nibh venenatis cras sed. Iaculis nunc sed augue lacus viverra vitae congue eu consequat. Pellentesque dignissim enim sit amet venenatis urna cursus eget. Ac ut consequat semper viverra nam libero. Sapien eget mi proin sed libero enim. Netus et malesuada fames ac turpis. Aliquet risus feugiat in ante metus dictum at tempor. Nibh praesent tristique magna sit amet purus gravida quis. Bibendum arcu vitae elementum curabitur vitae nunc sed velit dignissim. Donec pretium vulputate sapien nec sagittis. Risus nec feugiat in fermentum posuere urna nec. Tristique sollicitudin nibh sit amet commodo nulla facilisi nullam vehicula. Nisl nisi scelerisque eu ultrices vitae auctor. Morbi blandit cursus risus at ultrices mi tempus. Nunc mi ipsum faucibus vitae aliquet nec ullamcorper. Tellus orci ac auctor augue. In hac habitasse platea dictumst quisque sagittis. Et tortor at risus viverra adipiscing at in.
+            </p>
         </section>
     </article>
-    test:
+    <div class="clear"></div>
+    <ul id="post-article-ads">
+        <li class="ad-item">
+            <amp-ad width="300" height="200"
+                id="i-amphtml-demo-id-2"
+                type="fake"
+                a4a-conversion="true"
+                src="./ads/fake-ad.html">
+                <div placeholder>Loading...</div>
+                <div fallback>Could not display the fake ad :(</div>
+            </amp-ad>
+        </li>
+        <li class="ad-item">
+            <amp-embed width=100 height=100
+                type=taboola
+                layout=responsive
+                heights="(min-width:780px) 64%, (min-width:480px) 98%, (min-width:460px) 167%, 196%"
+                data-publisher="amp-demo"
+                data-mode="thumbnails-a"
+                data-placement="Responsive example - AMP"
+                data-article="auto">
+            </amp-embed>
+        </li>
+    </ul>
     </body>
 </html>
