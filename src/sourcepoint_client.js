@@ -16,25 +16,22 @@ var REJECT_SOME = "some"
 function ccpa_events(amp) {
   // consent string(uspString):
   // version|explicit_notice_shown|user_optout_of_sale
+  let consentReadyCount = 0;  // # of consent readies we've seen so far
+  let expectedConsentReadies = 2; // # we expect to see, 2 if we have a message, will be adjusted to 1 if we dont have one
+
   return {
+    // show message once its ready
     onMessageReady: loggedFunction('onMessageReady', function (category) {
       if (category === "ccpa") {
         amp.show();
       }
     }),
+    // enter full screen for PM
     onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (category, choice_id, choiceType) {
       if (category === "ccpa") {
         switch(choiceType) {
           case SHOW_PM_CHOICE_TYPE:
             amp.fullscreen();
-            break;
-          case ACCEPT_ALL_CHOICE_TYPE:
-            amp.purposeConsent = ACCEPT_ALL;
-            amp.accept('1YN-'); // The user has not opted out of the sale. Explicit notice shown.
-            break;
-          case REJECT_ALL_CHOICE_TYPE:
-            amp.purposeConsent = REJECT_ALL;
-            amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
             break;
           default:
             break;
@@ -42,37 +39,29 @@ function ccpa_events(amp) {
         }
       }
     }),
-    onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (category, pmData) {
-      if (category === "ccpa") {
-        amp.purposeConsent = pmData.purposeConsent;
-      }
-    }),
-    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (category, consentStatus) {
-      if (category === "ccpa") {
-        amp.purposeConsent = consentStatus;
-      }
-    }),
+    // dimiss message on error
     onMessageChoiceError: loggedFunction('onMessageChoiceError', function (category, err) {
       if (category === "ccpa") {
         amp.dismiss();
       }
     }),
-    // TODO - onConsentReady happens twice for ccpa if there is a message, we only want to handle the second one
+    // pass up consent status once its ready
     onConsentReady: loggedFunction('onConsentReady', function (category, uuid, uspString) {
       if (category === "ccpa") {
-        switch( amp.purposeConsent ) {
-          case ACCEPT_ALL:
-            amp.accept(uspString); // The user has not opted out of the sale. Explicit notice shown.
-            break;
-          case REJECT_ALL:
-            amp.reject(uspString); // The user has opted out of their data being used for the sale. Explicit notice shown.
-            break;
-          case REJECT_SOME:
-            amp.reject(uspString); // The user has opted out of their data being used for the sale. Explicit notice shown.
-            break;
+        if (++consentReadyCount >= expectedConsentReadies) {
+          if (typeof uspString == "string") {
+            if (uspString[2] === "N") {
+              amp.accept(uspString)
+            } else {
+              amp.reject(uspString)
+            }
+          } else {
+            amp.dismiss()
+          }
         }
       }
     }),
+    // dismiss PM if user opened PM themselves and canceled
     onPMCancel: loggedFunction('onPMCancel', function (category) {
       if (category === "ccpa") {
         if(amp.userTriggered()) {
@@ -80,17 +69,16 @@ function ccpa_events(amp) {
         }
       }
     }),
+    // adjust our expected onConsentReadies if we don't have a message to show
     onMessageReceiveData: loggedFunction('onMessageReceiveData', function (category, data) {
       if (category === "ccpa") {
-        // TODO - is this logic below correct? We should just use what we get from wrapper probably
-        if (data.msg_id==0) { // targeting doesnt apply for messaging to be shown
-          amp.accept('1NN-'); // The user has not opted out of the sale. No explicit notice shown.
-        }
-        if(amp.userTriggered()) {
-          amp.show();
+        if (!amp.userTriggered() && data.messageId==0) { 
+          // we don't have a message and we're not showing a PM, so we will only have one onConsentReady
+          expectedConsentReadies--;
         }
       }
     }),
+    // show PM if user opened it
     onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function () {
       if(amp.userTriggered()) {
         amp.show();
