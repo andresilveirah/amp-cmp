@@ -29,6 +29,26 @@ var ampConfig = JSON.parse(window.name)
 var amp = new AMPClient(ampConfig, onAMPMessage);
 var clientConfig = ampConfig.clientConfig;
 
+const { 
+  accountId, 
+  baseEndpoint,
+  consentLanguage, 
+  env,
+  mmsDomain, 
+  msgOrigin, 
+  pmTab, 
+  privacyManagerId,
+  scriptVersion, 
+  stageCampaign, 
+  targetingParams,
+  wrapperAPIOrigin 
+} = clientConfig;
+
+let {
+  campaignEnv,
+  propertyHref
+} = clientConfig;
+
 // set query params for triggering the message or the PM directly
 let showPM = false;
 let runMessaging = false;
@@ -42,27 +62,11 @@ if (history && history.pushState) {
     + '?_sp_showPM='+showPM
     + '&_sp_runMessaging='+runMessaging
     + '&isCCPA='+(clientConfig.isCCPA || false);
+  if (scriptVersion) {
+    newurl += '&_sp_version=' + scriptVersion
+  }
   history.pushState({ path: newurl }, '', newurl);
 }
-
-const { 
-  accountId, 
-  baseEndpoint,
-  consentLanguage, 
-  env,
-  mmsDomain, 
-  msgOrigin, 
-  pmTab, 
-  privacyManagerId, 
-  stageCampaign, 
-  targetingParams,
-  wrapperAPIOrigin 
-} = clientConfig;
-
-let {
-  campaignEnv,
-  propertyHref
-} = clientConfig;
 
 // prefer new config type, support legacy
 campaignEnv = campaignEnv || (stageCampaign ? "stage" : "prod")
