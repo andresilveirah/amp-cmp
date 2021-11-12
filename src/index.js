@@ -50,7 +50,8 @@ const {
   baseEndpoint,
   consentLanguage, 
   env,
-  mmsDomain,  
+  mmsDomain, 
+  msgOrigin, 
   pmTab, 
   privacyManagerId, 
   stageCampaign, 
@@ -89,6 +90,7 @@ if (pageviewId)   spConfig.pageviewId = pageviewId;
 if (pageviewId64) spConfig.pageviewId64 = pageviewId64;
 if (wrapperAPIOrigin) spConfig.wrapperAPIOrigin = wrapperAPIOrigin;
 if (mmsDomain) spConfig.mmsDomain = mmsDomain
+if (msgOrigin) spConfig.msgOrigin = msgOrigin
 
 if (clientConfig.isCCPA) {
   spConfig.ccpa = {}
