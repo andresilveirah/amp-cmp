@@ -14,7 +14,7 @@ npm run server
 npm run ui
 ```
 
-3. On your browser, visit `http://localhost/test.html`
+3. On your browser, visit `http://localhost/unified.html`
 
 
 Helpful Hints:
