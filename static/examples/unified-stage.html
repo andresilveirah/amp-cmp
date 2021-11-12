@@ -1,0 +1,240 @@
+<!doctype html>
+<html amp lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Hello, AMPs</title>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    <script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
+    <script async custom-element="amp-consent" src="https://cdn.ampproject.org/v0/amp-consent-0.1.js"></script>
+    <script async custom-element="amp-sticky-ad" src="https://cdn.ampproject.org/v0/amp-sticky-ad-1.0.js"></script>
+    <script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>
+    <script async custom-element="amp-geo" src="https://cdn.ampproject.org/v0/amp-geo-0.1.js"></script>
+    <link rel="canonical" href="./index.html">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <meta name="amp-consent-blocking" content>
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <style amp-custom>
+        :root {
+            --space-2: 1rem;   /* 16px */
+            --space-3: 1.5rem; /* 24px */
+            --blue: #0385CD;
+            --gray-light: #f3f5f7;
+            --gray-dark: #565867;
+            --font-size: 16px;
+        }
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-top: 0;
+        }
+        html,body,div {
+            margin: 0;
+            padding: 0;
+            background-color: var(--gray-light);
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        header, footer {
+            background-color: var(--blue);
+            color: white;
+        }
+        article {
+            padding: 16px;
+            background-color: white;
+            color: var(--gray-dark);
+            line-height: 26px;
+            font-weight: 400;
+        }
+        code, pre {
+            background-color: #F6F8FA;
+            padding: 2px;
+            font-size: var(--font-size);
+        }
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1em;
+        }
+        #primary{
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        #privacy-settings-prompt {
+            background-color: var(--blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: var(--space-3);
+        }
+        #privacy-settings-prompt button {
+            cursor: pointer;
+            border: none;
+            background-color: inherit;
+            color: white;
+            font-size: var(--font-size);
+            line-height: 26px;
+            font-weight: 400;
+        }
+        .ad-item {
+            display: block;
+            float: left;
+            padding: 0 50px;
+        }
+        #ads-container {
+            max-width: 800px;
+            height: 250px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        @media (max-width: 800px) {
+            .ad-item {
+                width: 100%;
+                padding: 0 5px;
+                text-align: center;
+            }
+        }
+        .clear::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+<body>
+    <amp-geo layout="nodisplay">
+        <script type="application/json">
+            {
+                "ISOCountryGroups": {
+                    "eea": ["preset-eea", "unknown"],
+                    "us": ["us"]
+                }
+            }
+        </script>
+    </amp-geo>
+
+    <amp-consent id='consent' layout='nodisplay' type="SourcePoint">
+        <!-- Sourcepoint stub function     -->
+
+        <script type="application/json">
+            {
+                "consentRequired": "false",
+                "consentInstanceId": "sourcepoint",
+                "promptUISrc": "//localhost:8080/index.html?authId=CLIENT_ID",
+                "promptUISrc": "//sp-amp.s3.amazonaws.com/stage/index.html"
+                "postPromptUI": "consent-ui",
+                "clientConfig": {
+                    "accountId": 22,
+                    "env": "localProd",
+                    "propertyHref": "https://amp-multi.dan.sourcepoint.com",
+                    "stageCampaign": false
+                },
+                "geoOverride": {
+                    "eea": {
+                        "consentRequired": "remote",
+                        "checkConsentHref": "https://cdn.sp-stage.net/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",
+                        "clientConfig": {
+                            "pmTab": "purposes",
+                            "privacyManagerId": 521350
+                        }
+                    },
+                    "us": {
+                        "consentRequired": "remote",
+                        "checkConsentHref": "https://cdn.sp-stage.net/wrapper/ccpa/amp-v2?authId=CLIENT_ID",
+                        "clientConfig": {
+                            "isCCPA": true,
+                            "privacyManagerId": "574801",
+                            "showNoticeUntilAction": true
+                        }
+                    }
+                }
+            }
+        </script>
+    </amp-consent>
+    <header>
+        <nav class="wrap">
+            <a href="https://sourcepoint.com" target="_blank">
+                <amp-img
+                        alt="SourcePoint Logo"
+                        width="160"
+                        height="21"
+                        src="https://uploads-ssl.webflow.com/57d30b6aa1924bb30d7ae290/57d30b6aa1924bb30d7ae3f2_Sourcepoint-Logo.svg"></amp-img>
+            </a>
+        </nav>
+    </header>
+
+    <div id="consent-ui">
+        <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
+    </div>
+    <ul id="ads-container">
+        <li class="ad-item">
+            <amp-ad width="300" height="200"
+                id="i-amphtml-demo-id-2"
+                type="fake"
+                a4a-conversion="true"
+                src="./ads/fake-ad.html">
+                <div placeholder>Loading...</div>
+                <div fallback>Could not display the fake ad :(</div>
+            </amp-ad>
+        </li>
+        <li class="ad-item">
+            <amp-ad type="industrybrains"
+                    width="300"
+                    height="250"
+                    data-width="300"
+                    data-height="250"
+                    data-cid="19626-3798936394"
+                    data-block-on-consent
+            >
+
+                <div fallback>No ad for you</div>
+            </amp-ad>
+
+        </li>
+        <li class="ad-item">
+            <amp-embed width=100 height=100
+                    type=taboola
+                    layout=responsive
+                    heights="(min-width:780px) 64%, (min-width:480px) 98%, (min-width:460px) 167%, 196%"
+                    data-publisher="amp-demo"
+                    data-mode="thumbnails-a"
+                    data-placement="Responsive example - AMP"
+                    data-article="auto">
+            </amp-embed>
+        </li>
+    </ul>
+    <div class="clear"></div>
+    <article id="primary">
+        <h1>AMP Project</h1>
+        <section>
+            test
+            <amp-img
+                    layout="responsive"
+                    width="1390"
+                    height="430"
+                    alt="SourcePoint CMP"
+                    src="https://46c4ruxjs5w5sbas2hnua710-wpengine.netdna-ssl.com/wp-content/uploads/amp-logo.png">
+            </amp-img>
+        </section>
+    </article>
+    test:
+    </body>
+    </html>
+
+
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Page Title</title>
+
+
+
+    <body>
+
+    <a onclick="window._sp_.loadPrivacyManagerModal(136664, 'vendors');" href="javascript:void(0);">Load PM</a>
+    <span style="position: absolute; bottom: 0pt; left: 0pt;"></span>
+    <div></div> <div></div>
+
+</body>
+</html>
