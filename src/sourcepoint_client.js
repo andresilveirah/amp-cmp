@@ -45,6 +45,7 @@ function ccpa_events(amp) {
         amp.dismiss();
       }
     }),
+    // TODO - add onError dismissal
     // pass up consent status once its ready
     onConsentReady: loggedFunction('onConsentReady', function (category, uuid, uspString) {
       if (category === "ccpa") {
@@ -89,48 +90,38 @@ function ccpa_events(amp) {
 
 function gdpr_events(amp) {
   return {
+    // show message once its ready
     onMessageReady: loggedFunction('onMessageReady', function(category) {
       if (category === "gdpr") {
         amp.show();
       }
     }),
+    // dimiss message on error
     onMessageChoiceError: loggedFunction('onMessageChoiceError', function (category, error) {
       if (category === "gdpr") {
         console.error(error)
         amp.dismiss();
       }
     }),
+    // TODO - add onError dismissal
     onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (category, _choiceId, choiceType) {
       if (category === "gdpr") {
         switch(choiceType) {
           case SHOW_PM_CHOICE_TYPE:
             amp.fullscreen();
             break;
-          case ACCEPT_ALL_CHOICE_TYPE: // TODO - is this needed? - amp.purposeConsent does not seem to be used
-            amp.purposeConsent = ACCEPT_ALL;
+          default: 
             break;
-          default: // TODO - is this needed? - amp.purposeConsent does not seem to be used
-            amp.purposeConsent = REJECT_ALL
         }
       }
     }),
-    // TODO - is this needed? - amp.purposeConsent does not seem to be used
-    onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (category, consents) {
-      if (category === "gdpr") {
-        amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
-      }
-    }),
-    // TODO - is this needed? - amp.purposeConsent does not seem to be used
-    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (category, consents) {
-      if (category === "gdpr") {
-        amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
-      }
-    }),
+    // dismiss PM if user opened PM themselves and canceled
     onPMCancel: loggedFunction('onPMCancel', function (category) {
       if (category === "gdpr") {
         if(amp.userTriggered()) amp.dismiss();
       }
     }),
+    // pass up consent status once its ready
     onConsentReady:  loggedFunction('onConsentReady', function (category, _consentUUID, euconsent, {addtlConsent, consentedToAll}) {
       if (category === "gdpr") {
         consentedToAll ?
