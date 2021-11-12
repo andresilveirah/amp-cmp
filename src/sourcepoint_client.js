@@ -40,12 +40,12 @@ function ccpa_events(amp) {
       }
     }),
     // dimiss message on error
-    onMessageChoiceError: loggedFunction('onMessageChoiceError', function (category, err) {
-      if (category === "ccpa") {
-        amp.dismiss();
-      }
+    onMessageChoiceError: loggedFunction('onMessageChoiceError', function () {
+      amp.dismiss();
     }),
-    // TODO - add onError dismissal
+    onError: loggedFunction('onError', function () {
+      amp.dismiss();
+    }),
     // pass up consent status once its ready
     onConsentReady: loggedFunction('onConsentReady', function (category, uuid, uspString) {
       if (category === "ccpa") {
@@ -97,13 +97,12 @@ function gdpr_events(amp) {
       }
     }),
     // dimiss message on error
-    onMessageChoiceError: loggedFunction('onMessageChoiceError', function (category, error) {
-      if (category === "gdpr") {
-        console.error(error)
+    onMessageChoiceError: loggedFunction('onMessageChoiceError', function () {
         amp.dismiss();
-      }
     }),
-    // TODO - add onError dismissal
+    onError: loggedFunction('onError', function () {
+      amp.dismiss();
+    }),
     onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (category, _choiceId, choiceType) {
       if (category === "gdpr") {
         switch(choiceType) {
