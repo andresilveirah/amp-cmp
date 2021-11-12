@@ -56,16 +56,10 @@ let runMessaging = false;
 if (amp.userTriggered() && ( clientConfig.privacyManagerId && (clientConfig.privacyManagerId.length > 0 || clientConfig.privacyManagerId > 0) )) showPM = true;
 if (!amp.userTriggered() || !clientConfig.privacyManagerId || clientConfig.privacyManagerId.length == 0) runMessaging = true;
 
-// TODO - I think we can remove these
-if (history && history.pushState) {
-  var newurl = location.protocol + "//" + location.host + location.pathname
-    + '?_sp_showPM='+showPM
-    + '&_sp_runMessaging='+runMessaging
-    + '&isCCPA='+(clientConfig.isCCPA || false);
-  if (scriptVersion) {
+if (history && history.pushState && scriptVersion) {
+    var newurl = location.protocol + "//" + location.host + location.pathname;
     newurl += '&_sp_version=' + scriptVersion
-  }
-  history.pushState({ path: newurl }, '', newurl);
+    history.pushState({ path: newurl }, '', newurl);
 }
 
 // prefer new config type, support legacy
