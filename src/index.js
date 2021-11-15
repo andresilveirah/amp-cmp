@@ -31,7 +31,6 @@ var clientConfig = ampConfig.clientConfig;
 
 const { 
   accountId, 
-  baseEndpoint,
   consentLanguage, 
   env,
   mmsDomain, 
@@ -45,6 +44,7 @@ const {
 } = clientConfig;
 
 let {
+  baseEndpoint,
   campaignEnv,
   propertyHref
 } = clientConfig;
@@ -67,7 +67,14 @@ campaignEnv = campaignEnv || (stageCampaign ? "stage" : "prod")
 if (!propertyHref && clientConfig.siteHref) {
   propertyHref = clientConfig.siteHref
 }
-// TODO - create baseEndpoint from old configs? or use existing ones as overrides?
+// legacy configs won't have baseEndpoint, use wrapperAPIOrigin if we have it to get client cname
+if (wrapperAPIOrigin && !baseEndpoint) {
+  try {
+    const urlParser = document.createElement('a');
+    urlParser.href = wrapperAPIOrigin;
+    baseEndpoint = urlParser.origin
+  } catch(e) {}
+}
 
 // create config
 const spConfig = {
