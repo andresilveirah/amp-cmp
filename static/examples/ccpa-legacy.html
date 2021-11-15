@@ -114,8 +114,6 @@
     </amp-analytics>
 
     <amp-consent id='consent' layout='nodisplay'>
-        <!-- TODO - this config does not yet work -->
-        <!-- TODO - the unified script does not support legacy CCPA PMs -->
         <script type="application/json">
             {
                 "consentRequired": "remote",
@@ -131,8 +129,8 @@
                     }
                 },            
                 "clientConfig": {
-                    "accountId": 1319,
-                    "propertyHref": "https://amp.property.ccpa",
+                    "accountId": 22,
+                    "siteHref": "https://tests-ccpa.dan.sourcepoint.com",
                     "isCCPA": true,
                     "stageCampaign": false,
                     "privacyManagerId": "5ea9bc1433cc622fca6fb662",
@@ -142,6 +140,35 @@
                 }
             }
         </script>
+        <!-- local config -->
+        <!-- <script type="application/json">
+            {
+                "consentRequired": "remote",
+                "consentInstanceId": "sourcepoint",
+                "checkConsentHref": "http://localhost:3000/ccpa/amp-v2?authId=CLIENT_ID",
+                "promptUISrc": "//localhost:8080/index.html?authId=CLIENT_ID",
+                "postPromptUI": "consent-ui",
+                "uiConfig": {"overlay":true},
+                "cookies": {
+                    "enabled": true,
+                    "AMP-CONSENT": {
+                        "value": "LINKER_PARAM(authId, _a)"
+                    }
+                },            
+                "clientConfig": {
+                    "accountId": 22,
+                    "env": "localProd",
+                    "siteHref": "https://tests-ccpa.dan.sourcepoint.com",
+                    "isCCPA": true,
+                    "stageCampaign": false,
+                    "privacyManagerId": "5ea9bc1433cc622fca6fb662",
+                    "getDnsMsgMms": true,
+                    "alwaysDisplayDns": false,
+                    "showNoticeUntilAction": true,
+                    "wrapperAPIOrigin": "//localhost:3000/wrapper"
+                }
+            }
+        </script> -->
     </amp-consent>
 
     <div id="consent-ui">

@@ -19,6 +19,11 @@ function ccpa_events(amp) {
   let consentReadyCount = 0;  // # of consent readies we've seen so far
   let expectedConsentReadies = 2; // # we expect to see, 2 if we have a message, will be adjusted to 1 if we dont have one
 
+  if (amp.userTriggered()) {
+    // we will only get one onConsentReady if runMessaging = false
+    expectedConsentReadies = 1;
+  }
+
   return {
     // show message once its ready
     onMessageReady: loggedFunction('onMessageReady', function (category) {
@@ -73,7 +78,7 @@ function ccpa_events(amp) {
     // adjust our expected onConsentReadies if we don't have a message to show
     onMessageReceiveData: loggedFunction('onMessageReceiveData', function (category, data) {
       if (category === "ccpa") {
-        if (!amp.userTriggered() && data.messageId==0) { 
+        if (!amp.userTriggered() && data.messageId == 0) { 
           // we don't have a message and we're not showing a PM, so we will only have one onConsentReady
           expectedConsentReadies--;
         }
