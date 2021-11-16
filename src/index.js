@@ -1,4 +1,5 @@
 import { MSG_SCRIPT_URL, BASE_ENDPOINT } from './constants';
+import { getSourceUrlConfigs } from './util';
 import {gdpr_events, ccpa_events} from './sourcepoint_client';
 import AMPClient from './amp_client';
 
@@ -27,7 +28,9 @@ var onAMPMessage = function(payload) {
 }
 var ampConfig = JSON.parse(window.name)
 var amp = new AMPClient(ampConfig, onAMPMessage);
-var clientConfig = ampConfig.clientConfig;
+
+let sourceUrlConfigs = getSourceUrlConfigs()
+let clientConfig = { ...ampConfig.clientConfig, ...sourceUrlConfigs }
 
 const { 
   accountId, 
