@@ -18,12 +18,14 @@
     "babel-jest": "^24.9.0",
     "eslint": "^6.6.0",
     "jest": "^24.9.0",
-    "rollup": "1.26.5"
+    "rollup": "1.26.5",
+    "sp-test-core": "git+ssh://git@github.com/SourcePointUSA/sp-testing-core.git"
   },
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c --watch",
     "test": "jest",
+    "test-integration": "node test-integration.js",
     "server": "PORT=80 yarn start",
     "start": "nodemon src/server/index.js",
     "ui": "PORT=8080 yarn start"
