@@ -49,9 +49,12 @@ drivers.forEach((d) => {
         d.quit();
     });
 
-    describe(`CCPA accept FL`, () => {
+    describe.each([
+        ['new config', 'tests/unified-ccpa.html', '[id^="sp_message_iframe_"][src*="/ccpa_pm/"]', '[title*="BACK"]'],
+        ['legacy config', 'tests/legacy-ccpa.html','[id^="sp_message_iframe_"][src*="ccpa-pm.sp-prod"]', '#tab-cancel']
+    ])(`CCPA accept FL (%s)`, (name, path, pmSelector, pmBackSelector) => {
         it('should load the page', async () => {
-            await setupPage(driver, 'tests/unified-ccpa.html');
+            await setupPage(driver, path);
         });
 
         it('should load the message', async () => {
@@ -79,12 +82,12 @@ drivers.forEach((d) => {
             let consentFrame = await getElementBySelector(driver, 'amp-consent > iframe');
             await driver.switchTo().frame(consentFrame);
 
-            let pmIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"][src*="/ccpa_pm/"]');
+            let pmIframe = await getElementBySelector(driver, pmSelector);
             await driver.switchTo().frame(pmIframe);
         })
 
         it(`should dismiss the PM when opened by the user`, async () => {
-            const dismissButton = await getElementBySelector(driver, '[title*="BACK"]');
+            const dismissButton = await getElementBySelector(driver, pmBackSelector);
             await dismissButton.click();
 
             // wait for animation to finish
@@ -98,9 +101,12 @@ drivers.forEach((d) => {
         })
     })
 
-    describe(`CCPA accept PM`, () => {
+    describe.each([
+        ['new config', 'tests/unified-ccpa.html'],
+        ['legacy config', 'tests/legacy-ccpa.html']
+    ])(`CCPA accept PM (%s)`, (name, path) => {
         it('should load the page', async () => {
-            await setupPage(driver, 'tests/unified-ccpa.html');
+            await setupPage(driver, path);
         });
 
         it('should load the message', async () => {
@@ -141,9 +147,12 @@ drivers.forEach((d) => {
         })
     })
 
-    describe(`CCPA reject PM`, () => {
+    describe.each([
+        ['new config', 'tests/unified-ccpa.html'],
+        ['legacy config', 'tests/legacy-ccpa.html']
+    ])(`CCPA reject PM (%s)`, (name, path) => {
         it('should load the page', async () => {
-            await setupPage(driver, 'tests/unified-ccpa.html');
+            await setupPage(driver, path);
         });
 
         it('should load the message', async () => {
