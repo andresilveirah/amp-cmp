@@ -129,6 +129,13 @@ drivers.forEach((d) => {
             await saveAndExitButton.click();
         })
 
+        it(`should have dismissed the message`, async () => {
+            // wait for animation to finish
+            await new Promise((resolve) => { setTimeout(resolve, 1000) })
+
+            return expectMessageClosed(driver, 'amp-consent > iframe')
+        })
+
         it(`should have no js errors`, async () => {
             return expectNoConsoleErrors(driver);
         })
@@ -166,6 +173,13 @@ drivers.forEach((d) => {
 
             const saveAndExitButton = await getElementBySelector(driver, '[title*="SAVE & EXIT"]');
             await saveAndExitButton.click();
+        })
+
+        it(`should have dismissed the message`, async () => {
+            // wait for animation to finish
+            await new Promise((resolve) => { setTimeout(resolve, 1000) })
+
+            return expectMessageClosed(driver, 'amp-consent > iframe')
         })
 
         it(`should have no js errors`, async () => {

@@ -121,6 +121,13 @@ drivers.forEach((d) => {
             await acceptAll.click();
         })
 
+        it(`should have dismissed the message`, async () => {
+            // wait for animation to finish
+            await new Promise((resolve) => { setTimeout(resolve, 1000) })
+
+            return expectMessageClosed(driver, 'amp-consent > iframe')
+        })
+
         it(`should have no js errors`, async () => {
             return expectNoConsoleErrors(driver);
         })
@@ -158,6 +165,13 @@ drivers.forEach((d) => {
 
             const rejectAll = await getElementBySelector(driver, '[title*="Reject All"]');
             await rejectAll.click();
+        })
+
+        it(`should have dismissed the message`, async () => {
+            // wait for animation to finish
+            await new Promise((resolve) => { setTimeout(resolve, 1000) })
+
+            return expectMessageClosed(driver, 'amp-consent > iframe')
         })
 
         it(`should have no js errors`, async () => {
