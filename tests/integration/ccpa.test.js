@@ -46,9 +46,6 @@ drivers.forEach((d) => {
     });
 
     describe(`CCPA accept FL`, () => {
-        let consentReady;
-        let uspData;
-
         it('should load the page', async () => {
             await setupPage(driver, 'tests/unified-ccpa.html');
         });
@@ -58,9 +55,6 @@ drivers.forEach((d) => {
             await  driver.switchTo().frame(ampConsentIframe);
 
             let flIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"]');
-
-            uspData = __uspapi(driver, 'getuspdata');
-
             return driver.switchTo().frame(flIframe);
         });
 
@@ -71,13 +65,6 @@ drivers.forEach((d) => {
             const acceptButton = await getElementBySelector(driver, '[title*="Accept"]');
             await acceptButton.click();
         });
-
-        it(`should return the correct usp data`, async () => {
-            // TODO - use onConsentReady, this is not from after we accept
-            const [{ uspString }, success] = await uspData
-            
-            expect(uspString).toBe("1YNN")
-        })
 
         it(`should let us open the PM from the consent-ui`, async () => {
             await driver.switchTo().defaultContent();
@@ -94,21 +81,15 @@ drivers.forEach((d) => {
     })
 
     describe(`CCPA accept PM`, () => {
-        let consentFrame;
-        let uspData;
-
         it('should load the page', async () => {
             await setupPage(driver, 'tests/unified-ccpa.html');
         });
 
         it('should load the message', async () => {
-            consentFrame = await getElementBySelector(driver, 'amp-consent > iframe');
+            let consentFrame = await getElementBySelector(driver, 'amp-consent > iframe');
             await driver.switchTo().frame(consentFrame);
 
             let flIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"]');
-
-            uspData = __uspapi(driver, 'getuspdata');
-
             return driver.switchTo().frame(flIframe);
         });
 
@@ -120,7 +101,7 @@ drivers.forEach((d) => {
             await optionsButton.click();
 
             await driver.switchTo().defaultContent();
-            consentFrame = await getElementBySelector(driver, 'amp-consent > iframe');
+            let consentFrame = await getElementBySelector(driver, 'amp-consent > iframe');
             await driver.switchTo().frame(consentFrame);
 
             let pmIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"][src*="/ccpa_pm/"]');
@@ -129,12 +110,40 @@ drivers.forEach((d) => {
             const saveAndExitButton = await getElementBySelector(driver, '[title*="SAVE & EXIT"]');
             await saveAndExitButton.click();
         })
+    })
 
-        it(`should return the correct usp data`, async () => {
-            // TODO - use onConsentReady, this is not from after we accept
-            const [{ uspString }, success] = await uspData
-            
-            expect(uspString).toBe("1YNN")
+    describe(`CCPA reject PM`, () => {
+        it('should load the page', async () => {
+            await setupPage(driver, 'tests/unified-ccpa.html');
+        });
+
+        it('should load the message', async () => {
+            let consentFrame = await getElementBySelector(driver, 'amp-consent > iframe');
+            await driver.switchTo().frame(consentFrame);
+
+            let flIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"]');
+            return driver.switchTo().frame(flIframe);
+        });
+
+        it(`should open the PM`, async () => {
+            // wait for animation to finish
+            await new Promise((resolve) => { setTimeout(resolve, 1000) })
+            // click accept
+            const optionsButton = await getElementBySelector(driver, '[title*="Settings"]');
+            await optionsButton.click();
+
+            await driver.switchTo().defaultContent();
+            let consentFrame = await getElementBySelector(driver, 'amp-consent > iframe');
+            await driver.switchTo().frame(consentFrame);
+
+            let pmIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"][src*="/ccpa_pm/"]');
+            await driver.switchTo().frame(pmIframe);
+
+            const toggle = await getElementBySelector(driver, '.pm-switch .slider');
+            await toggle.click();
+
+            const saveAndExitButton = await getElementBySelector(driver, '[title*="SAVE & EXIT"]');
+            await saveAndExitButton.click();
         })
     })
 });
