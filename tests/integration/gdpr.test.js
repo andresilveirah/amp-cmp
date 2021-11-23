@@ -41,9 +41,12 @@ drivers.forEach((d) => {
         d.quit();
     });
 
-    describe(`GDPR accept FL`, () => {
+    describe.each([
+        ['new config', 'tests/unified-gdpr.html'],
+        ['legacy config', 'tests/legacy-gdpr.html']
+    ])(`GDPR accept FL (%s)`, (name, path) => {
         it('should load the page', async () => {
-            await setupPage(driver, 'tests/unified-gdpr.html');
+            await setupPage(driver, path);
         });
 
         it('should load the message', async () => {
@@ -90,9 +93,12 @@ drivers.forEach((d) => {
         })
     })
 
-    describe(`GDPR accept PM`, () => {
+    describe.each([
+        ['new config', 'tests/unified-gdpr.html'],
+        ['legacy config', 'tests/legacy-gdpr.html']
+    ])(`GDPR accept PM (%s)`, (name, path) => {
         it('should load the page', async () => {
-            await setupPage(driver, 'tests/unified-gdpr.html');
+            await setupPage(driver, path);
         });
 
         it('should load the message', async () => {
@@ -133,9 +139,12 @@ drivers.forEach((d) => {
         })
     })
 
-    describe(`GDPR reject PM`, () => {
+    describe.each([
+        ['new config', 'tests/unified-gdpr.html'],
+        ['legacy config', 'tests/legacy-gdpr.html']
+    ])(`GDPR reject PM (%s)`, (name, path) => {
         it('should load the page', async () => {
-            await setupPage(driver, 'tests/unified-gdpr.html');
+            await setupPage(driver, path);
         });
 
         it('should load the message', async () => {
