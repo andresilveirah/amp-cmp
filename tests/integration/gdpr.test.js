@@ -26,14 +26,6 @@ export const setupPage = async (driver, path) => {
     await driver.get([localhost, path].join('/') + "?_sp_version=3.4.0");
 }
 
-const __uspapi = async (driver, command) => {
-    return driver.executeAsyncScript(`var cb = arguments[arguments.length - 1]; __uspapi('${command}', 1, function(data, success) { cb([data, success]); })`);
-}
-
-const addEventListener = async (driver, event) => {
-    return driver.executeAsyncScript(`var cb = arguments[arguments.length - 1]; window._sp_.addEventListener('${event}', function() { cb(arguments); })`);
-}
-
 const drivers = getAllDrivers();
 
 let driver;
@@ -49,9 +41,9 @@ drivers.forEach((d) => {
         d.quit();
     });
 
-    describe(`CCPA accept FL`, () => {
+    describe(`GDPR accept FL`, () => {
         it('should load the page', async () => {
-            await setupPage(driver, 'tests/unified-ccpa.html');
+            await setupPage(driver, 'tests/unified-gdpr.html');
         });
 
         it('should load the message', async () => {
@@ -79,12 +71,12 @@ drivers.forEach((d) => {
             let consentFrame = await getElementBySelector(driver, 'amp-consent > iframe');
             await driver.switchTo().frame(consentFrame);
 
-            let pmIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"][src*="/ccpa_pm/"]');
+            let pmIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"][src*="/privacy-manager/"]');
             await driver.switchTo().frame(pmIframe);
         })
 
         it(`should dismiss the PM when opened by the user`, async () => {
-            const dismissButton = await getElementBySelector(driver, '[title*="BACK"]');
+            const dismissButton = await getElementBySelector(driver, '[title*="Cancel"]');
             await dismissButton.click();
 
             // wait for animation to finish
@@ -98,9 +90,9 @@ drivers.forEach((d) => {
         })
     })
 
-    describe(`CCPA accept PM`, () => {
+    describe(`GDPR accept PM`, () => {
         it('should load the page', async () => {
-            await setupPage(driver, 'tests/unified-ccpa.html');
+            await setupPage(driver, 'tests/unified-gdpr.html');
         });
 
         it('should load the message', async () => {
@@ -115,18 +107,18 @@ drivers.forEach((d) => {
             // wait for animation to finish
             await new Promise((resolve) => { setTimeout(resolve, 1000) })
             // click accept
-            const optionsButton = await getElementBySelector(driver, '[title*="Settings"]');
+            const optionsButton = await getElementBySelector(driver, '[title*="Options"]');
             await optionsButton.click();
 
             await driver.switchTo().defaultContent();
             let consentFrame = await getElementBySelector(driver, 'amp-consent > iframe');
             await driver.switchTo().frame(consentFrame);
 
-            let pmIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"][src*="/ccpa_pm/"]');
+            let pmIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"][src*="/privacy-manager/"]');
             await driver.switchTo().frame(pmIframe);
 
-            const saveAndExitButton = await getElementBySelector(driver, '[title*="SAVE & EXIT"]');
-            await saveAndExitButton.click();
+            const acceptAll = await getElementBySelector(driver, '[title*="Accept All"]');
+            await acceptAll.click();
         })
 
         it(`should have no js errors`, async () => {
@@ -134,9 +126,9 @@ drivers.forEach((d) => {
         })
     })
 
-    describe(`CCPA reject PM`, () => {
+    describe(`GDPR reject PM`, () => {
         it('should load the page', async () => {
-            await setupPage(driver, 'tests/unified-ccpa.html');
+            await setupPage(driver, 'tests/unified-gdpr.html');
         });
 
         it('should load the message', async () => {
@@ -151,21 +143,21 @@ drivers.forEach((d) => {
             // wait for animation to finish
             await new Promise((resolve) => { setTimeout(resolve, 1000) })
             // click accept
-            const optionsButton = await getElementBySelector(driver, '[title*="Settings"]');
+            const optionsButton = await getElementBySelector(driver, '[title*="Options"]');
             await optionsButton.click();
 
             await driver.switchTo().defaultContent();
             let consentFrame = await getElementBySelector(driver, 'amp-consent > iframe');
             await driver.switchTo().frame(consentFrame);
 
-            let pmIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"][src*="/ccpa_pm/"]');
+            let pmIframe = await getElementBySelector(driver, '[id^="sp_message_iframe_"][src*="/privacy-manager/"]');
             await driver.switchTo().frame(pmIframe);
 
             const toggle = await getElementBySelector(driver, '.pm-switch .slider');
             await toggle.click();
 
-            const saveAndExitButton = await getElementBySelector(driver, '[title*="SAVE & EXIT"]');
-            await saveAndExitButton.click();
+            const rejectAll = await getElementBySelector(driver, '[title*="Reject All"]');
+            await rejectAll.click();
         })
 
         it(`should have no js errors`, async () => {
