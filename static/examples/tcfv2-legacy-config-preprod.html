@@ -113,60 +113,66 @@
         </script>
     </amp-analytics>
 
-    <amp-consent id='consent' layout='nodisplay'>
+    <amp-consent id="consent" layout="nodisplay">
         <script type="application/json">
             {
+                "promptUISrc": "//sp-amp.s3.amazonaws.com/preprod/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",
+                "checkConsentHref": "https://preprod-cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",
+
                 "consentRequired": "remote",
                 "consentInstanceId": "sourcepoint",
-                "checkConsentHref": "https://wrapper-api.sp-stage.net/ccpa/amp-v2?authId=CLIENT_ID",
-                "promptUISrc": "//sp-amp.s3.amazonaws.com/stage/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",
                 "postPromptUI": "consent-ui",
-                "uiConfig": {"overlay":true},
                 "cookies": {
                     "enabled": true,
                     "AMP-CONSENT": {
                         "value": "LINKER_PARAM(authId, _a)"
                     }
-                },            
+                },
                 "clientConfig": {
                     "accountId": 22,
-                    "siteHref": "https://tests-ccpa.dan.sourcepoint.com",
-                    "isCCPA": true,
+                    "propertyHref": "https://tcfv2-legacy.amp.dan.sourcepoint.com",
+                    "propertyId": 9591,
+                    "mmsDomain": "https://cdn.privacy-mgmt.com",
+                    "privacyManagerId": 575127,
+                    "isTCFV2": true,
+                    "pmTab": "purposes",
                     "stageCampaign": false,
-                    "privacyManagerId": "5ea9bc1433cc622fca6fb662",
-                    "getDnsMsgMms": true,
-                    "alwaysDisplayDns": false,
-                    "showNoticeUntilAction": true,
-                    "env": "localProd"
+                    "env": "localProd",
+                    "targetingParams": {
+                        "color": "red"
+                    }
                 }
             }
         </script>
-        <!-- local config -->
+        <!-- Local config: -->
         <!-- <script type="application/json">
             {
+                "promptUISrc": "//localhost:8080/index.html?authId=CLIENT_ID",
+                "checkConsentHref": "//cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",
+
                 "consentRequired": "remote",
                 "consentInstanceId": "sourcepoint",
-                "checkConsentHref": "http://localhost:3000/ccpa/amp-v2?authId=CLIENT_ID",
-                "promptUISrc": "//localhost:8080/index.html?authId=CLIENT_ID",
                 "postPromptUI": "consent-ui",
-                "uiConfig": {"overlay":true},
                 "cookies": {
                     "enabled": true,
                     "AMP-CONSENT": {
                         "value": "LINKER_PARAM(authId, _a)"
                     }
-                },            
+                },
                 "clientConfig": {
                     "accountId": 22,
-                    "env": "localProd",
-                    "siteHref": "https://tests-ccpa.dan.sourcepoint.com",
-                    "isCCPA": true,
+                    "propertyHref": "https://tcfv2-legacy.amp.dan.sourcepoint.com",
+                    "propertyId": 9591,
+                    "mmsDomain": "https://cdn.privacy-mgmt.com",
+                    "wrapperAPIOrigin": "//localhost:3000/wrapper",
+                    "privacyManagerId": 575127,
+                    "isTCFV2": true,
+                    "pmTab": "vendors",
                     "stageCampaign": false,
-                    "privacyManagerId": "5ea9bc1433cc622fca6fb662",
-                    "getDnsMsgMms": true,
-                    "alwaysDisplayDns": false,
-                    "showNoticeUntilAction": true,
-                    "wrapperAPIOrigin": "//localhost:3000/wrapper"
+                    "env": "localProd",
+                    "targetingParams": {
+                        "color": "red"
+                    }
                 }
             }
         </script> -->
