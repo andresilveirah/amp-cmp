@@ -124,19 +124,18 @@
             {
                 "consentRequired": "false",
                 "consentInstanceId": "sourcepoint",
-                "promptUISrc": "//sp-amp.s3.amazonaws.com/stage/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",
+                "promptUISrc": "//sp-amp.s3.amazonaws.com/preprod/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",
                 "postPromptUI": "consent-ui",
                 "clientConfig": {
                     "accountId": 22,
                     "env": "localProd",
                     "propertyHref": "https://amp-multi.dan.sourcepoint.com",
-                    "stageCampaign": false,
-                    "scriptVersion": "develop"
+                    "stageCampaign": false
                 },
                 "geoOverride": {
                     "eea": {
                         "consentRequired": "remote",
-                        "checkConsentHref": "https://wrapper-api.sp-stage.net/tcfv2/v1/amp-v2?authId=CLIENT_ID",
+                        "checkConsentHref": "https://preprod-cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",
                         "clientConfig": {
                             "pmTab": "purposes",
                             "privacyManagerId": 521350
@@ -144,7 +143,7 @@
                     },
                     "us": {
                         "consentRequired": "remote",
-                        "checkConsentHref": "https://wrapper-api.sp-stage.net/ccpa/amp-v2?authId=CLIENT_ID",
+                        "checkConsentHref": "https://preprod-cdn.privacy-mgmt.com/wrapper/ccpa/amp-v2?authId=CLIENT_ID",
                         "clientConfig": {
                             "isCCPA": true,
                             "privacyManagerId": "574801",
