@@ -8,7 +8,6 @@
     <script async custom-element="amp-consent" src="https://cdn.ampproject.org/v0/amp-consent-0.1.js"></script>
     <script async custom-element="amp-sticky-ad" src="https://cdn.ampproject.org/v0/amp-sticky-ad-1.0.js"></script>
     <script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>
-    <script async custom-element="amp-geo" src="https://cdn.ampproject.org/v0/amp-geo-0.1.js"></script>
     <link rel="canonical" href="./index.html">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
     <meta name="amp-consent-blocking" content>
@@ -106,48 +105,24 @@
     </style>
 </head>
 <body>
-    <amp-geo layout="nodisplay">
-        <script type="application/json">
-            {
-                "ISOCountryGroups": {
-                    "eea": ["preset-eea", "unknown"],
-                    "us": ["us"]
-                }
-            }
-        </script>
-    </amp-geo>
-
     <amp-consent id='consent' layout='nodisplay' type="SourcePoint">
         <!-- Sourcepoint stub function     -->
 
         <script type="application/json">
             {
-                "consentRequired": "false",
-                "consentInstanceId": "sourcepoint",
                 "promptUISrc": "//cdn.privacy-mgmt.com/amp/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",
+
+                "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",
+                "consentRequired": "remote",
+                "consentInstanceId": "sourcepoint",
                 "postPromptUI": "consent-ui",
                 "clientConfig": {
                     "accountId": 22,
+                    "env": "localProd",
                     "propertyHref": "https://amp-multi.dan.sourcepoint.com",
-                    "stageCampaign": false
-                },
-                "geoOverride": {
-                    "eea": {
-                        "consentRequired": "remote",
-                        "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",
-                        "clientConfig": {
-                            "pmTab": "purposes",
-                            "privacyManagerId": 521350
-                        }
-                    },
-                    "us": {
-                        "consentRequired": "remote",
-                        "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/ccpa/amp-v2?authId=CLIENT_ID",
-                        "clientConfig": {
-                            "isCCPA": true,
-                            "privacyManagerId": "574801"
-                        }
-                    }
+                    "stageCampaign": false,
+                    "pmTab": "purposes",
+                    "privacyManagerId": 521350
                 }
             }
         </script>

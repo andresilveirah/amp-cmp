@@ -1,4 +1,5 @@
-import { MMS_DOMAIN, MSG_SCRIPT_URL, MSG_SCRIPT_URL_CCPA, CCPA_ORIGIN, CCPA_MMS_DOMAIN, BASE_ENDPOINT } from './constants';
+import { MSG_SCRIPT_URL, BASE_ENDPOINT } from './constants';
+import { getSourceUrlConfigs } from './util';
 import {gdpr_events, ccpa_events} from './sourcepoint_client';
 import AMPClient from './amp_client';
 
@@ -22,19 +23,34 @@ var loadMessageScript = function(callback) {
   document.head.appendChild(script);
 };
 
-var loadMessageScriptCcpa = function () {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = MSG_SCRIPT_URL_CCPA;
-  document.head.appendChild(script);
-}
-
 var onAMPMessage = function(payload) {
   window.parent.postMessage(payload, '*')
 }
 var ampConfig = JSON.parse(window.name)
 var amp = new AMPClient(ampConfig, onAMPMessage);
-var clientConfig = ampConfig.clientConfig;
+
+let sourceUrlConfigs = getSourceUrlConfigs()
+let clientConfig = { ...ampConfig.clientConfig, ...sourceUrlConfigs }
+
+const { 
+  accountId, 
+  consentLanguage, 
+  env,
+  mmsDomain, 
+  msgOrigin, 
+  pmTab, 
+  privacyManagerId,
+  scriptVersion, 
+  stageCampaign, 
+  targetingParams,
+  wrapperAPIOrigin 
+} = clientConfig;
+
+let {
+  baseEndpoint,
+  campaignEnv,
+  propertyHref
+} = clientConfig;
 
 // set query params for triggering the message or the PM directly
 let showPM = false;
@@ -43,93 +59,69 @@ let runMessaging = false;
 if (amp.userTriggered() && ( clientConfig.privacyManagerId && (clientConfig.privacyManagerId.length > 0 || clientConfig.privacyManagerId > 0) )) showPM = true;
 if (!amp.userTriggered() || !clientConfig.privacyManagerId || clientConfig.privacyManagerId.length == 0) runMessaging = true;
 
-if (history && history.pushState) {
-  var newurl = location.protocol + "//" + location.host + location.pathname
-    + '?_sp_showPM='+showPM
-    + '&_sp_runMessaging='+runMessaging
-    + '&isCCPA='+(clientConfig.isCCPA || false);
-  history.pushState({ path: newurl }, '', newurl);
+if (history && history.pushState && scriptVersion) {
+    var newurl = location.protocol + "//" + location.host + location.pathname;
+    newurl += '&_sp_version=' + scriptVersion
+    history.pushState({ path: newurl }, '', newurl);
 }
 
-window._sp_ccpa = window._sp_;
-if (!clientConfig.isCCPA) {
-  const { 
-    accountId, 
-    baseEndpoint,
-    consentLanguage, 
-    env,
-    mmsDomain, 
-    propertyHref, 
-    pmTab, 
-    privacyManagerId, 
-    stageCampaign, 
-    targetingParams,
-    wrapperAPIOrigin 
-  } = clientConfig;
+// prefer new config type, support legacy
+campaignEnv = campaignEnv || (stageCampaign ? "stage" : "prod")
+if (!propertyHref && clientConfig.siteHref) {
+  propertyHref = clientConfig.siteHref
+}
+// legacy configs won't have baseEndpoint, use wrapperAPIOrigin if we have it to get client cname
+if (wrapperAPIOrigin && !baseEndpoint) {
+  try {
+    const urlParser = document.createElement('a');
+    urlParser.href = wrapperAPIOrigin;
+    baseEndpoint = urlParser.origin
+  } catch(e) {}
+}
 
-  let {
-    campaignEnv
-  } = clientConfig;
+// create config
+const spConfig = {
+  accountId: accountId,
+  baseEndpoint: baseEndpoint || BASE_ENDPOINT,
+  propertyHref: propertyHref,
+  consentLanguage: consentLanguage,
+  campaignEnv,
+  env: env || "prod",
+  targetingParams: targetingParams || {},
+  promptTrigger: ampConfig.promptTrigger,
+  runMessaging: !showPM
+}
 
-  // prefer new config type, support legacy
-  campaignEnv = campaignEnv || (stageCampaign ? "stage" : "prod")
+if (authId)       spConfig.authId = authId;
+if (clientId)     spConfig.clientId = clientId;
+if (pageviewId)   spConfig.pageviewId = pageviewId;
+if (pageviewId64) spConfig.pageviewId64 = pageviewId64;
+if (wrapperAPIOrigin) spConfig.wrapperAPIOrigin = wrapperAPIOrigin;
+if (mmsDomain) spConfig.mmsDomain = mmsDomain
+if (msgOrigin) spConfig.msgOrigin = msgOrigin
 
-  window._sp_ = {
-    config: {
-      accountId: accountId,
-      baseEndpoint: baseEndpoint || BASE_ENDPOINT,
-      propertyHref: propertyHref,
-      consentLanguage: consentLanguage,
-      mmsDomain: mmsDomain || MMS_DOMAIN,
-      campaignEnv,
-      env: env || "prod",
-      targetingParams: targetingParams || {},
-      promptTrigger: ampConfig.promptTrigger,
-      runMessaging: !showPM,
-      events: gdpr_events(amp),
-      gdpr: {
-        includeTcfApi: false
-      }
-    }
-  };
-  if (authId)       window._sp_.config.authId = authId;
-  if (clientId)     window._sp_.config.clientId = clientId;
-  if (pageviewId)   window._sp_.config.pageviewId = pageviewId;
-  if (pageviewId64) window._sp_.config.pageviewId64 = pageviewId64;
-  if (wrapperAPIOrigin) window._sp_.config.wrapperAPIOrigin = wrapperAPIOrigin
+if (clientConfig.isCCPA) {
+  spConfig.ccpa = {}
+  spConfig.events = ccpa_events(amp)
+} else {
+  spConfig.gdpr = {
+    includeTcfApi: false
+  }
+  spConfig.events = gdpr_events(amp)
+}
 
-  loadMessageScript((_sp_) => {
-    if (showPM) {
+window._sp_ = {
+  config: spConfig
+};
+
+loadMessageScript((_sp_) => {
+  if (showPM) {
+    if (clientConfig.isCCPA) {
+      _sp_.ccpa.loadPrivacyManagerModal(privacyManagerId, pmTab)
+    } else {
       _sp_.gdpr.loadPrivacyManagerModal(privacyManagerId, pmTab)
     }
-  });
-} else {
-  console.log("run ccpa");
-  if (!clientConfig.propertyHref && clientConfig.siteHref) {
-    clientConfig.propertyHref = clientConfig.siteHref
   }
+});
 
-  window._sp_ccpa = {
-    config: {
-      mmsDomain: clientConfig.mmsDomain || CCPA_MMS_DOMAIN,
-      ccpaOrigin: clientConfig.ccpaOrigin || CCPA_ORIGIN,
-      accountId: clientConfig.accountId,
-      getDnsMsgMms: clientConfig.getDnsMsgMms,
-      alwaysDisplayDns: clientConfig.alwaysDisplayDns,
-      isCCPA: true,
-      siteId: clientConfig.siteId,
-      siteHref: clientConfig.propertyHref,
-      targetingParams: clientConfig.targetingParams || {},
-      privacyManagerId: clientConfig.privacyManagerId,
-      events: ccpa_events(amp),
-    }
-  };
-  if (authId)       window._sp_ccpa.config.authId = authId;
-  if (clientId)     window._sp_ccpa.config.clientId = clientId;
-  if (pageviewId)   window._sp_ccpa.config.pageviewId = pageviewId;
-  if (pageviewId64) window._sp_ccpa.config.pageviewId64 = pageviewId64;
-  window._sp_ =     window._sp_ccpa;
-
-  loadMessageScriptCcpa();
-}
 // end index.js
