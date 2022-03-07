@@ -124,17 +124,19 @@
             {
                 "consentRequired": "false",
                 "consentInstanceId": "sourcepoint",
-                "promptUISrc": "//cdn.privacy-mgmt.com/amp/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",
+                "promptUISrc": "//localhost:8080/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",
                 "postPromptUI": "consent-ui",
                 "clientConfig": {
+                    "debug": true,
                     "accountId": 22,
+                    "env": "localProd",
                     "propertyHref": "https://amp-multi.dan.sourcepoint.com",
                     "stageCampaign": false
                 },
                 "geoOverride": {
                     "eea": {
                         "consentRequired": "remote",
-                        "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",
+                        "checkConsentHref": "http://localhost:3000/tcfv2/v1/amp-v2?authId=CLIENT_ID",
                         "clientConfig": {
                             "pmTab": "purposes",
                             "privacyManagerId": 521350
@@ -142,10 +144,10 @@
                     },
                     "us": {
                         "consentRequired": "remote",
-                        "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/ccpa/amp-v2?authId=CLIENT_ID",
+                        "checkConsentHref": "http://localhost:3000/ccpa/amp-v2?authId=CLIENT_ID",
                         "clientConfig": {
                             "isCCPA": true,
-                            "privacyManagerId": "574801"
+                            "privacyManagerId": "574798"
                         }
                     }
                 }

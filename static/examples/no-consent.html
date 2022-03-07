@@ -5,13 +5,10 @@
     <title>Hello, AMPs</title>
     <script async src="https://cdn.ampproject.org/v0.js"></script>
     <script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
-    <script async custom-element="amp-consent" src="https://cdn.ampproject.org/v0/amp-consent-0.1.js"></script>
     <script async custom-element="amp-sticky-ad" src="https://cdn.ampproject.org/v0/amp-sticky-ad-1.0.js"></script>
     <script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>
-    <script async custom-element="amp-geo" src="https://cdn.ampproject.org/v0/amp-geo-0.1.js"></script>
     <link rel="canonical" href="./index.html">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
-    <meta name="amp-consent-blocking" content>
 
     <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
     <style amp-custom>
@@ -106,52 +103,6 @@
     </style>
 </head>
 <body>
-    <amp-geo layout="nodisplay">
-        <script type="application/json">
-            {
-                "ISOCountryGroups": {
-                    "eea": ["preset-eea", "unknown"],
-                    "us": ["us"]
-                }
-            }
-        </script>
-    </amp-geo>
-
-    <amp-consent id='consent' layout='nodisplay' type="SourcePoint">
-        <!-- Sourcepoint stub function     -->
-
-        <script type="application/json">
-            {
-                "consentRequired": "false",
-                "consentInstanceId": "sourcepoint",
-                "promptUISrc": "//cdn.privacy-mgmt.com/amp/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",
-                "postPromptUI": "consent-ui",
-                "clientConfig": {
-                    "accountId": 22,
-                    "propertyHref": "https://amp-multi.dan.sourcepoint.com",
-                    "stageCampaign": false
-                },
-                "geoOverride": {
-                    "eea": {
-                        "consentRequired": "remote",
-                        "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",
-                        "clientConfig": {
-                            "pmTab": "purposes",
-                            "privacyManagerId": 521350
-                        }
-                    },
-                    "us": {
-                        "consentRequired": "remote",
-                        "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/ccpa/amp-v2?authId=CLIENT_ID",
-                        "clientConfig": {
-                            "isCCPA": true,
-                            "privacyManagerId": "574801"
-                        }
-                    }
-                }
-            }
-        </script>
-    </amp-consent>
     <header>
         <nav class="wrap">
             <a href="https://sourcepoint.com" target="_blank">
@@ -164,10 +115,6 @@
         </nav>
     </header>
 
-    <div id="consent-ui">
-        <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
-    </div>
-
     <ul id="ads-container">
         <li class="ad-item">
             <amp-ad type="industrybrains"
@@ -176,7 +123,6 @@
                     data-width="300"
                     data-height="250"
                     data-cid="19626-3798936394"
-                    data-block-on-consent
             >
 
                 <div fallback>No ad for you</div>
@@ -209,15 +155,13 @@
                 id="i-amphtml-demo-id-2"
                 type="fake"
                 a4a-conversion="true"
-                src="./ads/fake-ad.html"
-                data-block-on-consent>
+                src="./ads/fake-ad.html">
                 <div placeholder>Loading...</div>
                 <div fallback>Could not display the fake ad :(</div>
             </amp-ad>
         </li>
         <li class="ad-item">
             <amp-embed width=100 height=100
-                data-block-on-consent
                 type=taboola
                 layout=responsive
                 heights="(min-width:780px) 64%, (min-width:480px) 98%, (min-width:460px) 167%, 196%"
