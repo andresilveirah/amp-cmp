@@ -13,166 +13,128 @@ var ACCEPT_ALL = "all";
 var REJECT_ALL = "none";
 var REJECT_SOME = "some"
 
-function gdpr_events(amp) {
-  return {
-    onMessageReady: loggedFunction('onMessageReady', function() {
-      amp.show();
-    }),
-    onMessageChoiceError: loggedFunction('onMessageChoiceError', function (error) {
-      console.error(error)
-      amp.reject("");
-    }),
-    onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function() {
-      if(amp.userTriggered()) {
-        amp.show();
-      }
-    }),
-    onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (_choiceId, choiceType) {
-      switch(choiceType) {
-        case SHOW_PM_CHOICE_TYPE:
-          amp.fullscreen();
-          break;
-        case ACCEPT_ALL_CHOICE_TYPE:
-          amp.purposeConsent = ACCEPT_ALL;
-          break;
-        default:
-          amp.purposeConsent = REJECT_ALL
-      }
-    }),
-    onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (consents) {
-      // consents: {"purposeConsent":"all|some|none", "vendorConsent":"all|some|none" }
-      amp.purposeConsent = consents.purposeConsent
-    }),
-    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (consents) {
-      // consents: {"purposeConsent":"all|some|none", "vendorConsent":"all|some|none" }
-      amp.purposeConsent = consents.purposeConsent
-    }),
-    onPMCancel: loggedFunction('onPMCancel', function () {
-      if(amp.userTriggered()) amp.dismiss();
-    }),
-    onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent, addtlConsent, consentedToAll) {
-      amp.purposeConsent === ACCEPT_ALL ?
-        amp.accept(euconsent) :
-        amp.reject(euconsent);
-    })
-  };
-};
-
 function ccpa_events(amp) {
   // consent string(uspString):
   // version|explicit_notice_shown|user_optout_of_sale
-  return {
-    onMessageReady: function () {
-      amp.show();
-    },
-    onMessageChoiceSelect: function (choice_id, choiceType) {
-      switch(choiceType) {
-        case SHOW_PM_CHOICE_TYPE:
-          amp.fullscreen();
-          break;
-        case ACCEPT_ALL_CHOICE_TYPE:
-          amp.purposeConsent = ACCEPT_ALL;
-          amp.accept('1YN-'); // The user has not opted out of the sale. Explicit notice shown.
-          break;
-        case REJECT_ALL_CHOICE_TYPE:
-          amp.purposeConsent = REJECT_ALL;
-          amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
-          break;
-        default:
-          break;
+  let consentReadyCount = 0;  // # of consent readies we've seen so far
+  let expectedConsentReadies = 2; // # we expect to see, 2 if we have a message, will be adjusted to 1 if we dont have one
 
+  if (amp.userTriggered()) {
+    // we will only get one onConsentReady if runMessaging = false
+    expectedConsentReadies = 1;
+  }
+
+  return {
+    // show message once its ready
+    onMessageReady: loggedFunction('onMessageReady', function (category) {
+      if (category === "ccpa") {
+        amp.show();
       }
-    },
-    onPrivacyManagerAction: function (pmData) {
-      amp.purposeConsent = pmData.purposeConsent;
-    },
-    onPrivacyManagerActionStatus: function (pmData) {
-      amp.purposeConsent = pmData.purposeConsent;
-    },
-    onMessageChoiceError: function (err) {
+    }),
+    // enter full screen for PM
+    onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (category, choice_id, choiceType) {
+      if (category === "ccpa") {
+        switch(choiceType) {
+          case SHOW_PM_CHOICE_TYPE:
+            amp.fullscreen();
+            break;
+          default:
+            break;
+
+        }
+      }
+    }),
+    // dimiss message on error
+    onMessageChoiceError: loggedFunction('onMessageChoiceError', function () {
       amp.dismiss();
-    },
-    onConsentReady: function (consentUUID, euconsent) {
-      switch( amp.purposeConsent ) {
-        case ACCEPT_ALL:
-          amp.accept('1YN-'); // The user has not opted out of the sale. Explicit notice shown.
-          break;
-        case REJECT_ALL:
-          amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
-          break;
-        case REJECT_SOME:
-          amp.reject('1YY-'); // The user has opted out of their data being used for the sale. Explicit notice shown.
-          break;
-        default:
+    }),
+    onError: loggedFunction('onError', function () {
+      amp.dismiss();
+    }),
+    // pass up consent status once its ready
+    onConsentReady: loggedFunction('onConsentReady', function (category, uuid, uspString) {
+      if (category === "ccpa") {
+        if (++consentReadyCount >= expectedConsentReadies) {
+          if (typeof uspString == "string") {
+            if (uspString[2] === "N") {
+              amp.accept(uspString)
+            } else {
+              amp.reject(uspString)
+            }
+          } else {
+            amp.dismiss()
+          }
+        }
+      }
+    }),
+    // dismiss PM if user opened PM themselves and canceled
+    onPMCancel: loggedFunction('onPMCancel', function (category) {
+      if (category === "ccpa") {
+        if(amp.userTriggered()) {
           amp.dismiss();
-          break;
+        }
       }
-    },
-    onPMCancel: function () {
-      if(amp.userTriggered()) {
-        amp.dismiss();
+    }),
+    // adjust our expected onConsentReadies if we don't have a message to show
+    onMessageReceiveData: loggedFunction('onMessageReceiveData', function (category, data) {
+      if (category === "ccpa") {
+        if (!amp.userTriggered() && data.messageId == 0) { 
+          // we don't have a message and we're not showing a PM, so we will only have one onConsentReady
+          expectedConsentReadies--;
+        }
       }
-    },
-    onMessageReceiveData: function (data) {
-      if (data.msg_id==0) { // targeting doesnt apply for messaging to be shown
-        amp.accept('1NN-'); // The user has not opted out of the sale. No explicit notice shown.
-      }
-      if(amp.userTriggered()) {
-        amp.show();
-      }
-    },
-    onSPPMObjectReady: function () {
+    }),
+    // show PM if user opened it
+    onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function () {
       if(amp.userTriggered()) {
         amp.show();
       }
-    }
-  };
-};
-
-function tcfv2_events(amp) {
-  return {
-    onMessageReady: loggedFunction('onMessageReady', function() {
-      amp.show();
-    }),
-    onMessageChoiceError: loggedFunction('onMessageChoiceError', function (error) {
-      console.error(error)
-      amp.dismiss();
-    }),
-    onSPPMObjectReady: loggedFunction('onSPPMObjectReady', function() {
-      if(amp.userTriggered()) {
-        amp.show();
-      }
-    }),
-    onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (_choiceId, choiceType) {
-      switch(choiceType) {
-        case SHOW_PM_CHOICE_TYPE:
-          amp.fullscreen();
-          break;
-        case ACCEPT_ALL_CHOICE_TYPE:
-          amp.purposeConsent = ACCEPT_ALL;
-          break;
-        default:
-          amp.purposeConsent = REJECT_ALL
-      }
-    }),
-    onPrivacyManagerAction: loggedFunction('onPrivacyManagerAction', function (consents) {
-      // consents: { "all|some|none" }
-      amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
-    }),
-    onPrivacyManagerActionStatus: loggedFunction('onPrivacyManagerActionStatus', function (consents) {
-      // consents: { "all|some|none" }
-      amp.purposeConsent = (consents === 'all') ? ACCEPT_ALL : 'consents'
-    }),
-    onPMCancel: loggedFunction('onPMCancel', function () {
-      if(amp.userTriggered()) amp.dismiss();
-    }),
-    onConsentReady:  loggedFunction('onConsentReady', function (_consentUUID, euconsent, {addtlConsent, consentedToAll}) {
-      consentedToAll ?
-        amp.accept(euconsent, {consentStringType: 2, gdprApplies: true, additionalConsent: addtlConsent, consentStatus: 'consentedAll'}) :
-        amp.reject(euconsent, {consentStringType: 2, gdprApplies: true, additionalConsent: addtlConsent, consentStatus: 'rejectedAny'});
     })
   };
 };
 
-export { gdpr_events, ccpa_events, tcfv2_events }
+function gdpr_events(amp) {
+  return {
+    // show message once its ready
+    onMessageReady: loggedFunction('onMessageReady', function(category) {
+      if (category === "gdpr") {
+        amp.show();
+      }
+    }),
+    // dimiss message on error
+    onMessageChoiceError: loggedFunction('onMessageChoiceError', function () {
+        amp.dismiss();
+    }),
+    onError: loggedFunction('onError', function () {
+      amp.dismiss();
+    }),
+    onMessageChoiceSelect: loggedFunction('onMessageChoiceSelect', function (category, _choiceId, choiceType) {
+      if (category === "gdpr") {
+        switch(choiceType) {
+          case SHOW_PM_CHOICE_TYPE:
+            amp.fullscreen();
+            break;
+          default: 
+            break;
+        }
+      }
+    }),
+    // dismiss PM if user opened PM themselves and canceled
+    onPMCancel: loggedFunction('onPMCancel', function (category) {
+      if (category === "gdpr") {
+        if(amp.userTriggered()) amp.dismiss();
+      }
+    }),
+    // pass up consent status once its ready
+    onConsentReady:  loggedFunction('onConsentReady', function (category, _consentUUID, euconsent, {addtlConsent, consentedToAll}) {
+      if (category === "gdpr") {
+        consentedToAll ?
+          amp.accept(euconsent, {consentStringType: 2, gdprApplies: true, additionalConsent: addtlConsent, consentStatus: 'consentedAll'}) :
+          amp.reject(euconsent, {consentStringType: 2, gdprApplies: true, additionalConsent: addtlConsent, consentStatus: 'rejectedAny'});
+      }
+    })
+  };
+};
+
+export { gdpr_events, ccpa_events }
 // end sourcepoint_client.js
