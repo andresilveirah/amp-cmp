@@ -7,6 +7,7 @@ import {
     expectMessageClosed,
     expectNoConsoleErrors
 } from "sp-test-core/dist/assertions";
+import { By } from "selenium-webdriver";
 
 export const setupPage = async (driver, path) => {
     const localhost = `http://localhost`;
@@ -22,8 +23,7 @@ export const setupPage = async (driver, path) => {
     }
 
     // go to default test page
-    // TODO - remove script version
-    await driver.get([localhost, path].join('/') + "?_sp_version=3.4.0");
+    await driver.get([localhost, path].join('/'));
 }
 
 const __uspapi = async (driver, command) => {
@@ -93,7 +93,8 @@ drivers.forEach((d) => {
             // wait for animation to finish
             await new Promise((resolve) => { setTimeout(resolve, 1000) })
 
-            return expectMessageClosed(driver, 'amp-consent > iframe')
+            const messageIframes = await driver.findElements(By.css('amp-consent > iframe'));
+            expect(messageIframes.length).toBe(0);
         })
 
         it(`should have no js errors`, async () => {
