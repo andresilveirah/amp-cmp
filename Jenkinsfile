@@ -37,7 +37,7 @@ pipeline {
         sh '''
           aws s3 cp "$STATIC_FOLDER" "$PROD_BUCKET/amp/unified/" --recursive --region="$REGION" --acl public-read
           aws s3 cp "$DIST_FOLDER" "$PROD_BUCKET/amp/unified/dist/" --recursive --region="$REGION" --acl public-read
-          aws cloudfront create-invalidation --distribution-id E1PNN09XQ5MY9K --paths /*
+          aws cloudfront create-invalidation --distribution-id E1PNN09XQ5MY9K --paths "/amp/*"
         '''
       }
     }
